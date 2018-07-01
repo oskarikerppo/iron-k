@@ -1,5 +1,13 @@
 import numpy as np
 
+#todo list, buglist
+#en passant is bugged, must check that pawn moved two squares
+#checks might be bugged
+
+#moves and checks for queen, king, bishob and rook
+#castling
+#end of game conditions
+
 
 
 class Board:
