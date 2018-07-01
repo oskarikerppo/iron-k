@@ -7,6 +7,7 @@ class Board:
 		self.newBoard()
 		self.sideToMove = "white"
 		self.moveHistory = []
+		self.boardHistory = []
 		self.moves = []
 		self.pawns = ['a','b','c','d','e','f','g','h']
 		self.pieces = ['','','N','B','R','Q','K']
@@ -137,9 +138,14 @@ class Board:
 		self.moves = moves
 		return moves
 
+	def getBoardConfiguration(self, board):
+		return np.copy(board)
+
+
 
 
 	def makeMove(self, move):
+		self.boardHistory.append(self.getBoardConfiguration(self.board))
 		color = self.sideToMove
 		if color == 'white':
 			color = 1
@@ -193,7 +199,18 @@ class Board:
 		else:
 			self.sideToMove = 'white'
 
-
+	def undoMove(self):
+		if len(self.moveHistory) == 0:
+			print("No moves have been made!")
+			return 0
+		print(self.board == self.boardHistory[-1])
+		self.board = self.boardHistory[-1]
+		self.boardHistory = self.boardHistory[:-1]
+		self.moveHistory = self.moveHistory[:-1]
+		if self.sideToMove == "white":
+			self.sideToMove = "black"
+		else:
+			self.sideToMove = "white"
 
 	def isCheck(self):
 		#Returns "white" if white is in check, "black" if black is in check
@@ -269,6 +286,10 @@ class Board:
 x = Board()
 x.showBoard()
 x.legalMoves()
+x.boardHistory
+'''
+
+x.undoMove()
 x.makeMove('a4')
 x.showBoard()
 x.legalMoves()
@@ -295,3 +316,5 @@ x.showBoard()
 x.legalMoves()
 print(x.moveHistory)
 x.isCheck()
+#print(x.boardHistory)
+'''
