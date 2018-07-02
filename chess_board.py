@@ -97,6 +97,23 @@ class Board:
 									elif self.board[i+l][j+m]  < 0:#Taking pawn
 										knightMoves.append('N' + self.coordinates[i][j] + 'x' + self.coordinates[i+l][j+m])
 						moves = moves + knightMoves
+					if self.board[i][j] == 3:#White bishop
+						bishopMoves = []
+						for k in [-1,1]:
+							for l in [-1,1]:
+								i_count = 1
+								j_count = 1
+								while 0 <=i + i_count*k <= 7 and 0 <= j + j_count*l <= 7:
+									if self.board[i + i_count*k][j + j_count*l] == 0:
+										bishopMoves.append('B' + self.coordinates[i][j] + self.coordinates[i + i_count*k][j + j_count*l])
+									elif self.board[i + i_count*k][j + j_count*l] < 0:#Taking
+										bishopMoves.append('B' + self.coordinates[i][j] + 'x' + self.coordinates[i + i_count*k][j + j_count*l])
+										break
+									else:
+										break
+									i_count += 1
+									j_count += 1
+						moves = moves + bishopMoves
 			for move in moves:
 				self.makeMove(move,False)
 				if "white" not in self.isCheck():
@@ -150,6 +167,23 @@ class Board:
 									elif self.board[i+l][j+m]  > 0:#Taking pawn
 										knightMoves.append('N' + self.coordinates[i][j] + 'x' + self.coordinates[i+l][j+m])
 						moves = moves + knightMoves	
+					if self.board[i][j] == -3:#Black bishop
+						bishopMoves = []
+						for k in [-1,1]:
+							for l in [-1,1]:
+								i_count = 1
+								j_count = 1
+								while 0 <=i + i_count*k <= 7 and 0 <= j + j_count*l <= 7:
+									if self.board[i + i_count*k][j + j_count*l] == 0:
+										bishopMoves.append('B' + self.coordinates[i][j] + self.coordinates[i + i_count*k][j + j_count*l])
+									elif self.board[i + i_count*k][j + j_count*l] > 0:#Taking
+										bishopMoves.append('B' + self.coordinates[i][j] + 'x' + self.coordinates[i + i_count*k][j + j_count*l])
+										break
+									else:
+										break
+									i_count += 1
+									j_count += 1
+						moves = moves + bishopMoves
 			for move in moves:
 				self.makeMove(move,False)
 				if "black" not in self.isCheck():
@@ -214,6 +248,17 @@ class Board:
 			row = target[0]
 			column = target[1]
 			self.board[row][column] = 0
+		if move[:1] == 'B':#Bishop move
+			target = move[-2:]
+			target = zip(*np.where(self.coordinates == target))[0]
+			row = target[0]
+			column = target[1]
+			self.board[row][column] = color*3
+			target = move[1:3]
+			target = zip(*np.where(self.coordinates == target))[0]
+			row = target[0]
+			column = target[1]
+			self.board[row][column] = 0		
 
 		self.moves = []
 		self.moveHistory.append(move)
