@@ -11,10 +11,16 @@ from keras.layers import Dense, Dropout, Flatten
 from keras.layers import Conv1D, MaxPooling1D
 from keras.layers.normalization import BatchNormalization
 from keras.models import load_model
+from keras.callbacks import EarlyStopping
 
 
 
-
+#todo
+#until game starts to get won and models learn do random moves most of the time
+#early stopping?
+#END OF GAME CONDITIONS
+#SAVE PREDICTED VALUES FOR LATER USE
+#Show predictions of moves to show that they are changing
 
 def main():
 	with open('Games\\game_library.txt', 'r+') as file:
@@ -27,7 +33,7 @@ def main():
 	bob = load_model('Models\\bob.h5')
 	walt = load_model('Models\\walt.h5')
 
-	epochs = 6
+	epochs = 12
 	for i in range(epochs):
 		beginning = time()
 		board = cb.Board()
@@ -86,14 +92,20 @@ def main():
 		train_w_rewards = np.array([])
 		for i in range(len(board.boardHistory[::2]), 0, -1):
 			train_w_rewards = np.append(train_w_rewards,walt_reward/i)
-		walt.fit(train_w,train_w_rewards, batch_size=1, epochs=1, verbose=0)
+		#earlystop = EarlyStopping(monitor='loss', min_delta=0.01, patience=5, verbose=1, mode='auto')
+		#callbacks_list = [earlystop]
+		#callbacks=callbacks_list,
+		walt.fit(train_w,train_w_rewards, batch_size=4, epochs=40, verbose=1)
 
 		train_b_array = [x.ravel().reshape(-1,64,1) for x in board.boardHistory[1::2]]
 		train_b = np.vstack(train_b_array)
 		train_b_rewards = np.array([])
 		for i in range(len(board.boardHistory[1::2]), 0, -1):
 			train_b_rewards = np.append(train_b_rewards,bob_reward/i)
-		bob.fit(train_b,train_b_rewards, batch_size=1, epochs=1, verbose=0)
+		#earlystop = EarlyStopping(monitor='loss', min_delta=0.01, patience=5, verbose=1, mode='auto')
+		#callbacks_list = [earlystop]
+		#callbacks=callbacks_list,
+		bob.fit(train_b,train_b_rewards, batch_size=4, epochs=40, verbose=1)
 
 
 

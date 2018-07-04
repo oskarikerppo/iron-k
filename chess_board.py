@@ -858,7 +858,7 @@ class Board:
 				return "white"
 			else:
 				return "stalemate"
-		elif len(self.moveHistory) >= 100:
+		if len(self.moveHistory) >= 100:
 			draw = True
 			for move in self.moveHistory[-100:]:
 				if 'x' in move:
@@ -866,17 +866,16 @@ class Board:
 					break
 			if draw:
 				return "draw"
-		elif len(self.moveHistory) >= 6:
-			last_moves = self.moveHistory[-6:]
+		if len(self.moveHistory) >= 12:
+			last_moves = self.moveHistory[-12:]
 			last_moves_set = set(last_moves)
 			last_moves = list(last_moves_set)
-			if len(last_moves) <= 2:
+			if len(last_moves) <= 4:
 				return "draw by repetition"
-		else:
-			if len(self.moveHistory) >= 100:
-				last_fifty = self.moveHistory[-100:]
-				for p in self.pawns:
-					for move in last_fifty:
-						if move.startswith(p):
-							return False
+		if len(self.moveHistory) >= 100:
+			last_fifty = self.moveHistory[-100:]
+			for p in self.pawns:
+				for move in last_fifty:
+					if move.startswith(p):
+						return False
 		return False
