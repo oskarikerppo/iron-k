@@ -30,43 +30,89 @@ def main():
 		key = 1
 	else:
 		key = max(games.keys()) + 1
-	bob = load_model('Models\\bob.h5')
+	#bob = load_model('Models\\bob.h5')
 	walt = load_model('Models\\walt.h5')
-
 	epochs = 12
+	results = []
 	for i in range(epochs):
+		print "--------------------NEW GAME-------------------"
 		beginning = time()
 		board = cb.Board()
 		board.newBoard()
 		gameOver = False
 		winner = ""
 		start = time()
+		i = 1
+		white_predictions = {}
+		black_predictions = {}
+		show_predictions = randint(1,40)
 		while not gameOver:
+			#exploration = randint(1,6)	
+			#print "EXPLORATION: "
 			white_moves = board.legalMoves()
+			if "O-O" in white_moves:
+				print "------------------------SHORT CASTLE BY WHITE POSSIBLE!!!----------------"
+			elif "O-O-O" in white_moves:
+				print "------------------------LONG CASTLE BY WHITE POSSIBLE!!!----------------"
 			white_scores = []
 			for move in white_moves:
 				board.makeMove(move)
-				white_scores.append(walt.predict(np.reshape(board.board,(-1,64,1))))
+				board_to_nn = (np.reshape(board.board,(-1,64,1))+6.0)/12.0
+				if str(board_to_nn) in white_predictions.keys():
+					white_scores.append(white_predictions[str(board_to_nn)])
+				else:
+					nn_prediction = walt.predict(board_to_nn)
+					white_scores.append(nn_prediction)
+					white_predictions[str(board_to_nn)] = nn_prediction
 				board.undoMove()
+			#if len(white_scores) > 9:
+			#	white_scores_sorted = np.sort(white_scores)
+			#	random_value = white_scores_sorted[-1*exploration]
+			#	board.makeMove(white_moves[np.where(white_scores == random_value)[0][0]])
+			#else:
 			board.makeMove(white_moves[np.argmax(white_scores)])
+			if i == show_predictions:
+				print white_scores
+				print white_moves
 			gameOver = board.gameOver()
 			if gameOver != False:
 				winner = gameOver
 				break
 			black_moves = board.legalMoves()
-			black_scores = []
-			for move in black_moves:
-				board.makeMove(move)
-				black_scores.append(bob.predict(np.reshape(board.board,(-1,64,1))))
-				board.undoMove()
-			board.makeMove(black_moves[np.argmax(black_scores)])
+			if "O-O" in black_moves:
+				print "------------------------SHORT CASTLE BY BLACK POSSIBLE!!!----------------"
+			elif "O-O-O" in black_moves:
+				print "------------------------LONG CASTLE BY BLACK POSSIBLE!!!----------------"
+			#black_scores = []
+			#for move in black_moves:
+		#		board.makeMove(move)
+			#	board_to_nn = (np.reshape(board.board,(-1,64,1))+6.0)/12.0
+			#	if str(board_to_nn) in black_predictions.keys():
+			#		black_scores.append(black_predictions[str(board_to_nn)])
+			#	else:
+			#		nn_prediction = bob.predict(board_to_nn)
+			#		black_scores.append(nn_prediction)
+			#		black_predictions[str(board_to_nn)] = nn_prediction
+			#	board.undoMove()
+			#if len(black_scores) > 9:
+			#	black_scores_sorted = np.sort(black_scores)
+			#	random_value = black_scores_sorted[-1*exploration]
+			#	board.makeMove(black_moves[np.where(black_scores == random_value)[0][0]])
+			#else:
+			black_move = black_moves[randint(0, len(black_moves)-1)]
+			board.makeMove(black_move)
+			#if i == show_predictions:
+			#	print black_scores
+			#	print black_moves
 			gameOver = board.gameOver()
 			if gameOver != False:
 				winner = gameOver
 				break
 			print time() - start
 			start = time()
-
+			i += 1
+		if winner == "white" or winner == "black":
+			board.moveHistory[-1] = board.moveHistory[-1].replace('+','#')
 		games[key] = board.moveHistory
 		key += 1
 
@@ -76,6 +122,7 @@ def main():
 		#print board_configuration
 		board.showBoard()
 		print winner
+		results.append(winner)
 		print start - beginning
 		print "Game over! Training..."
 		if winner == "white":
@@ -85,27 +132,29 @@ def main():
 			walt_reward = -1.0
 			bob_reward = 1.0		
 		else:
-			walt_reward = -0.2
-			bob_reward = 0.2
-		train_w_array = [x.ravel().reshape(-1,64,1) for x in board.boardHistory[::2]]
+			walt_reward = -0.1
+			bob_reward = 0.1
+		train_w_array = [((x.ravel() + 6.0)/12.0).reshape(-1,64,1) for x in board.boardHistory[::2]]
 		train_w = np.vstack(train_w_array)
 		train_w_rewards = np.array([])
 		for i in range(len(board.boardHistory[::2]), 0, -1):
-			train_w_rewards = np.append(train_w_rewards,walt_reward/i)
+			train_w_rewards = np.append(train_w_rewards, 0.5 + 0.5*walt_reward/i)
+		print train_w_rewards
 		#earlystop = EarlyStopping(monitor='loss', min_delta=0.01, patience=5, verbose=1, mode='auto')
 		#callbacks_list = [earlystop]
 		#callbacks=callbacks_list,
-		walt.fit(train_w,train_w_rewards, batch_size=4, epochs=40, verbose=1)
+		walt.fit(train_w,train_w_rewards, batch_size=1, epochs=1, verbose=1)
 
-		train_b_array = [x.ravel().reshape(-1,64,1) for x in board.boardHistory[1::2]]
-		train_b = np.vstack(train_b_array)
-		train_b_rewards = np.array([])
-		for i in range(len(board.boardHistory[1::2]), 0, -1):
-			train_b_rewards = np.append(train_b_rewards,bob_reward/i)
+		#train_b_array = [((x.ravel() + 6.0)/12.0).reshape(-1,64,1) for x in board.boardHistory[1::2]]
+		#train_b = np.vstack(train_b_array)
+		#train_b_rewards = np.array([])
+		#for i in range(len(board.boardHistory[1::2]), 0, -1):
+	#		train_b_rewards = np.append(train_b_rewards, 0.5 + 0.5*bob_reward/i)
+		#print train_b_rewards
 		#earlystop = EarlyStopping(monitor='loss', min_delta=0.01, patience=5, verbose=1, mode='auto')
 		#callbacks_list = [earlystop]
 		#callbacks=callbacks_list,
-		bob.fit(train_b,train_b_rewards, batch_size=4, epochs=40, verbose=1)
+		#bob.fit(train_b,train_b_rewards, batch_size=3, epochs=6, verbose=1)
 
 
 
@@ -113,8 +162,10 @@ def main():
 	with open('Games\\game_library.txt', 'w+') as file:
 		file.write(str(games))
 
-	bob.save('Models\\bob.h5')
+	#bob.save('Models\\bob.h5')
 	walt.save('Models\\walt.h5')
+
+	print results
 
 if __name__ == "__main__":
 	main()

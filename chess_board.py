@@ -1,4 +1,5 @@
 import numpy as np
+from random import randint
 
 #todo list, buglist
 #en passant is bugged, must check that pawn moved two squares
@@ -77,22 +78,22 @@ class Board:
 						if j == 0:
 							if self.board[i+1][j+1] == -1: #and not check
 								moves.append(self.pawns[j] + 'x' + self.pawns[j+1] + str(i+2))
-							if self.board[i][j+1] == -1 and self.moveHistory[-1] == self.pawns[j+1] + str(i+1): #and not check
-								moves.append(self.pawns[j] + 'x' + self.pawns[j+1] + str(i+2) + 'e.p.')
+							if i == 4 and self.board[i][j+1] == -1 and self.moveHistory[-1] == self.pawns[j+1] + str(i + 1) and self.pawns[j+1] + str(i + 2) not in self.moveHistory: #and not check
+								moves.append(self.pawns[j] + 'x' + self.pawns[j+1] + str(i + 2) + 'e.p.')
 						elif j == 7:
 							if self.board[i+1][j-1] == -1: #and not check
 								moves.append(self.pawns[j] + 'x' + self.pawns[j-1] + str(i+2))
-							if self.board[i][j-1] == -1 and self.moveHistory[-1] == self.pawns[j-1] + str(i+1): #and not check
-								moves.append(self.pawns[j] + 'x' + self.pawns[j-1] + str(i+2) + 'e.p.')
+							if i == 4 and self.board[i][j-1] == -1 and self.moveHistory[-1] == self.pawns[j-1] + str(i + 1) and self.pawns[j-1] + str(i + 2) not in self.moveHistory: #and not check
+								moves.append(self.pawns[j] + 'x' + self.pawns[j-1] + str(i + 2) + 'e.p.')
 						else:
 							if self.board[i+1][j+1] == -1: #and not check
 								moves.append(self.pawns[j] + 'x' + self.pawns[j+1] + str(i+2))	
 							if self.board[i+1][j-1] == -1: #and not check
 								moves.append(self.pawns[j] + 'x' + self.pawns[j-1] + str(i+2))	
-							if self.board[i][j+1] == -1 and self.moveHistory[-1] == self.pawns[j+1] + str(i+1): #and not check
-								moves.append(self.pawns[j] + 'x' + self.pawns[j+1] + str(i+2) + 'e.p.')
-							if self.board[i][j-1] == -1 and self.moveHistory[-1] == self.pawns[j-1] + str(i+1): #and not check
-								moves.append(self.pawns[j] + 'x' + self.pawns[j-1] + str(i+2) + 'e.p.')
+							if i == 4 and self.board[i][j+1] == -1 and self.moveHistory[-1] == self.pawns[j+1] + str(i + 1) and self.pawns[j+1] + str(i + 2) not in self.moveHistory: #and not check
+								moves.append(self.pawns[j] + 'x' + self.pawns[j+1] + str(i + 2) + 'e.p.')
+							if i == 4 and self.board[i][j-1] == -1 and self.moveHistory[-1] == self.pawns[j-1] + str(i + 1) and self.pawns[j-1] + str(i + 2) not in self.moveHistory: #and not check
+								moves.append(self.pawns[j] + 'x' + self.pawns[j-1] + str(i + 2) + 'e.p.')
 					elif self.board[i][j] == 2: #White Knight:
 						knightMoves = []
 						##print("White knight moves")
@@ -193,6 +194,10 @@ class Board:
 									elif self.board[i + k][j + l] < 0:
 										kingMoves.append('K' + self.coordinates[i][j] + 'x' +self.coordinates[i + k][j + l])
 						moves = moves + kingMoves
+			if self.canCastleLong(self.sideToMove):
+				moves.append("O-O-O")
+			if self.canCastleShort(self.sideToMove):
+				moves.append("O-O")
 			for move in moves:
 				self.makeMove(move,False)
 				future_checks = self.isCheck()
@@ -227,21 +232,21 @@ class Board:
 						if j == 0:
 							if self.board[i-1][j+1] == 1: #and not check
 								moves.append(self.pawns[j] + 'x' + self.pawns[j+1] + str(i))
-							if self.board[i][j+1] == 1 and self.moveHistory[-1] == self.pawns[j+1] + str(i+1): #and not check
+							if i == 3 and self.board[i][j+1] == 1 and self.moveHistory[-1] == self.pawns[j+1] + str(i + 1) and self.pawns[j+1] + str(i) not in self.moveHistory: #and not check
 								moves.append(self.pawns[j] + 'x' + self.pawns[j+1] + str(i) + 'e.p.')
 						if j == 7:
 							if self.board[i-1][j-1] == 1: #and not check
 								moves.append(self.pawns[j] + 'x' + self.pawns[j-1] + str(i))
-							if self.board[i][j-1] == 1 and self.moveHistory[-1] == self.pawns[j-1] + str(i+1): #and not check
+							if i == 3 and self.board[i][j-1] == 1 and self.moveHistory[-1] == self.pawns[j-1] + str(i + 1) and self.pawns[j-1] + str(i) not in self.moveHistory: #and not check
 								moves.append(self.pawns[j] + 'x' + self.pawns[j-1] + str(i) + 'e.p.')
 						if 0 < j < 7:
 							if self.board[i-1][j+1] == 1: #and not check
 								moves.append(self.pawns[j] + 'x' + self.pawns[j+1] + str(i))	
 							if self.board[i-1][j-1] == 1: #and not check
 								moves.append(self.pawns[j] + 'x' + self.pawns[j-1] + str(i))	
-							if self.board[i][j+1] == 1 and self.moveHistory[-1] == self.pawns[j+1] + str(i+1): #and not check
+							if i == 3 and self.board[i][j+1] == 1 and self.moveHistory[-1] == self.pawns[j+1] + str(i+1) and self.pawns[j+1] + str(i) not in self.moveHistory: #and not check
 								moves.append(self.pawns[j] + 'x' + self.pawns[j+1] + str(i) + 'e.p.')
-							if self.board[i][j-1] == 1 and self.moveHistory[-1] == self.pawns[j-1] + str(i+1): #and not check
+							if i == 3 and self.board[i][j-1] == 1 and self.moveHistory[-1] == self.pawns[j-1] + str(i+1) and self.pawns[j-1] + str(i) not in self.moveHistory: #and not check
 								moves.append(self.pawns[j] + 'x' + self.pawns[j-1] + str(i) + 'e.p.')	
 					elif self.board[i][j] == -2: #Black Knight:
 						knightMoves = []
@@ -343,9 +348,9 @@ class Board:
 									elif self.board[i + k][j + l] > 0:
 										kingMoves.append('K' + self.coordinates[i][j] + 'x' +self.coordinates[i + k][j + l])
 						moves = moves + kingMoves
-			if self.canCastleLong(sideToMove):
+			if self.canCastleLong(self.sideToMove):
 				moves.append("O-O-O")
-			if self.canCastleShort(sideToMove):
+			if self.canCastleShort(self.sideToMove):
 				moves.append("O-O")
 			for move in moves:
 				self.makeMove(move,False)
@@ -613,7 +618,7 @@ class Board:
 			column = target[1]
 			self.board[row][column] = 0	
 		elif move == "O-O-O":#Long castle
-			if color == "white":
+			if color == 1:
 				self.board[0][2] = 6
 				self.board[0][4] = 0
 				self.board[0][0] = 0
@@ -624,7 +629,7 @@ class Board:
 				self.board[7][0] = 0
 				self.board[7][3] = -4
 		elif move == "O-O":
-			if color == "white":
+			if color == 1:
 				self.board[0][6] = 6
 				self.board[0][4] = 0
 				self.board[0][7] = 0
@@ -633,7 +638,7 @@ class Board:
 				self.board[7][6] = -6
 				self.board[7][4] = 0
 				self.board[7][7] = 0
-				self.board[7][5] = 4				
+				self.board[7][5] = -4				
 
 		self.moves = []
 		if was_check:
@@ -859,23 +864,77 @@ class Board:
 			else:
 				return "stalemate"
 		if len(self.moveHistory) >= 100:
-			draw = True
+			nothing_taken = True
+			no_pawn_moves = True
 			for move in self.moveHistory[-100:]:
 				if 'x' in move:
-					draw = False
+					nothing_taken = False
 					break
-			if draw:
-				return "draw"
+				if move[:1] in self.pawns:
+					no_pawn_moves = False
+					break
+			if nothing_taken and no_pawn_moves:
+				return "draw by 50 move rule"
 		if len(self.moveHistory) >= 12:
 			last_moves = self.moveHistory[-12:]
 			last_moves_set = set(last_moves)
 			last_moves = list(last_moves_set)
 			if len(last_moves) <= 4:
 				return "draw by repetition"
-		if len(self.moveHistory) >= 100:
-			last_fifty = self.moveHistory[-100:]
-			for p in self.pawns:
-				for move in last_fifty:
-					if move.startswith(p):
-						return False
+		unique, counts = np.unique(self.board, return_counts=True)
+		piece_counts = dict(zip(unique, counts))
+		piece_counts_keys = piece_counts.keys()
+		if 1 not in piece_counts_keys and -1 not in piece_counts_keys:
+			print "level 1"
+			if 5 not in piece_counts_keys and -5 not in piece_counts_keys:
+				print "level 2"
+				if 4 not in piece_counts_keys and -4 not in piece_counts_keys:
+					print "level 3"
+					if 3 not in piece_counts_keys and -3 not in piece_counts_keys:
+						print "level 4"
+						return "Insufficient material"
+					elif (piece_counts.get(3,0) < 2 and piece_counts.get(2,0) == 0 or piece_counts.get(3,0) == 0) and (piece_counts.get(-3,0) < 2 and piece_counts.get(-2,0) == 0 or piece_counts.get(-3,0) == 0):
+						print "level 4 else"
+						return "Insufficient material"
 		return False
+
+"""
+x = Board()
+x.newBoard()
+
+gameOver = False
+
+while not gameOver:
+	wm = x.legalMoves()
+	if "O-O" in wm:
+		print "Short castle possible by white!"
+	if "O-O-O" in wm:
+		"Print long castle possible by white!"
+	x.makeMove(wm[randint(0,len(wm)-1)])
+	gameOver = x.gameOver()
+	if gameOver:
+		print gameOver
+		break
+	bm = x.legalMoves()
+	if "O-O" in bm:
+		print "Short castle possible by black!"
+	if "O-O-O" in bm:
+		"Print long castle possible by black!"
+	x.makeMove(bm[randint(0,len(bm)-1)])
+	gameOver = x.gameOver()
+	if gameOver:
+		print gameOver
+		break
+
+if gameOver == "white" or gameOver == "black":
+	x.moveHistory[-1] = x.moveHistory[-1].replace('+','#')
+print x.gameOver()
+print x.moveHistory
+print (len(x.moveHistory))
+x.showBoard()
+unique, counts = np.unique(x.board, return_counts=True)
+piece_counts = dict(zip(unique, counts))
+piece_counts_keys = piece_counts.keys()
+print piece_counts
+print piece_counts_keys
+"""

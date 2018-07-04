@@ -8,16 +8,16 @@ from keras.models import load_model
 import numpy as np
 
 W = Sequential()
-W.add(Conv1D(64, kernel_size=8,activation='linear',input_shape=(64,1),padding='same'))
+W.add(Conv1D(64, kernel_size=16,activation='relu',input_shape=(64,1),padding='same'))
 W.add(MaxPooling1D(pool_size=4,padding='same'))
-W.add(Conv1D(128, kernel_size=8,activation='linear',input_shape=(64,1),padding='same'))
+W.add(Conv1D(128, kernel_size=16,activation='relu',input_shape=(64,1),padding='same'))
 W.add(MaxPooling1D(pool_size=4,padding='same'))
 W.add(Flatten())
-W.add(Dense(256, activation='linear'))  
-W.add(Dense(256, activation='linear'))	               
-W.add(Dense(1, activation='tanh'))
+W.add(Dense(512, activation='relu'))  
+W.add(Dense(256, activation='relu'))	               
+W.add(Dense(1, activation='sigmoid'))
 #Compile model
-W.compile(loss=keras.losses.mean_squared_error, optimizer=keras.optimizers.Adam(),metrics=['accuracy'])
+W.compile(loss=keras.losses.binary_crossentropy, optimizer=keras.optimizers.SGD())
 W.summary()
 
 
@@ -30,6 +30,7 @@ state = np.array([[ 0.,  4.,  0.,  6.,  0.,  3.,  0.,  0.],
        [ 0.,  0.,  0.,  0.,  0.,  5., -1.,  0.],
        [ 0.,  0.,  0.,  0.,  0., -3.,  0.,  0.]])
 state = state.ravel()
+state = (state + 6.0)/12.0
 state = np.reshape(state,(-1,64,1))
 
 state2 = np.array([[ 0.,  4.,  0.,  6.,  0.,  3.,  0.,  0.],
@@ -41,6 +42,7 @@ state2 = np.array([[ 0.,  4.,  0.,  6.,  0.,  3.,  0.,  0.],
        [ 0.,  1.,  0.,  0.,  0.,  5., -1.,  0.],
        [ 0.,  0.,  0.,  0.,  0., -3.,  0.,  0.]])
 state2 = state2.ravel()
+state2 = (state2 + 6.0)/12.0
 state2 = np.reshape(state2,(-1,64,1))
 
 print W.predict(state)
@@ -48,16 +50,16 @@ W.save('Models\\walt.h5')
 
 
 B = Sequential()
-B.add(Conv1D(64, kernel_size=8,activation='linear',input_shape=(64,1),padding='same'))
+B.add(Conv1D(64, kernel_size=16,activation='relu',input_shape=(64,1),padding='same'))
 B.add(MaxPooling1D(pool_size=4,padding='same'))
-B.add(Conv1D(128, kernel_size=8,activation='linear',input_shape=(64,1),padding='same'))
+B.add(Conv1D(128, kernel_size=16,activation='relu',input_shape=(64,1),padding='same'))
 B.add(MaxPooling1D(pool_size=4,padding='same'))
 B.add(Flatten())
-B.add(Dense(256, activation='linear'))  
-B.add(Dense(256, activation='linear'))	               
-B.add(Dense(1, activation='tanh'))
+B.add(Dense(512, activation='relu'))  
+B.add(Dense(512, activation='relu'))	               
+B.add(Dense(1, activation='sigmoid'))
 #Compile model
-B.compile(loss=keras.losses.mean_squared_error, optimizer=keras.optimizers.Adam(),metrics=['accuracy'])
+B.compile(loss=keras.losses.binary_crossentropy, optimizer=keras.optimizers.SGD())
 B.summary()
 
 print W.predict(state2)
