@@ -17,7 +17,7 @@ W.add(Dense(512, activation='relu'))
 W.add(Dense(256, activation='relu'))	               
 W.add(Dense(1, activation='sigmoid'))
 #Compile model
-W.compile(loss=keras.losses.binary_crossentropy, optimizer=keras.optimizers.SGD())
+W.compile(loss=keras.losses.binary_crossentropy, optimizer=keras.optimizers.Adam(), metrics=["binary_accuracy"])
 W.summary()
 
 
@@ -59,7 +59,7 @@ B.add(Dense(512, activation='relu'))
 B.add(Dense(512, activation='relu'))	               
 B.add(Dense(1, activation='sigmoid'))
 #Compile model
-B.compile(loss=keras.losses.binary_crossentropy, optimizer=keras.optimizers.SGD())
+B.compile(loss=keras.losses.binary_crossentropy, optimizer=keras.optimizers.Adam(), metrics=["binary_accuracy"])
 B.summary()
 
 print W.predict(state2)

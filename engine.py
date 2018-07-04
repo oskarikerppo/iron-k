@@ -32,7 +32,7 @@ def main():
 		key = max(games.keys()) + 1
 	#bob = load_model('Models\\bob.h5')
 	walt = load_model('Models\\walt.h5')
-	epochs = 12
+	epochs = 120
 	results = []
 	for i in range(epochs):
 		print "--------------------NEW GAME-------------------"
@@ -50,10 +50,6 @@ def main():
 			#exploration = randint(1,6)	
 			#print "EXPLORATION: "
 			white_moves = board.legalMoves()
-			if "O-O" in white_moves:
-				print "------------------------SHORT CASTLE BY WHITE POSSIBLE!!!----------------"
-			elif "O-O-O" in white_moves:
-				print "------------------------LONG CASTLE BY WHITE POSSIBLE!!!----------------"
 			white_scores = []
 			for move in white_moves:
 				board.makeMove(move)
@@ -71,18 +67,11 @@ def main():
 			#	board.makeMove(white_moves[np.where(white_scores == random_value)[0][0]])
 			#else:
 			board.makeMove(white_moves[np.argmax(white_scores)])
-			if i == show_predictions:
-				print white_scores
-				print white_moves
 			gameOver = board.gameOver()
 			if gameOver != False:
 				winner = gameOver
 				break
 			black_moves = board.legalMoves()
-			if "O-O" in black_moves:
-				print "------------------------SHORT CASTLE BY BLACK POSSIBLE!!!----------------"
-			elif "O-O-O" in black_moves:
-				print "------------------------LONG CASTLE BY BLACK POSSIBLE!!!----------------"
 			#black_scores = []
 			#for move in black_moves:
 		#		board.makeMove(move)
@@ -108,9 +97,9 @@ def main():
 			if gameOver != False:
 				winner = gameOver
 				break
-			print time() - start
-			start = time()
 			i += 1
+		print time() - start
+		start = time()
 		if winner == "white" or winner == "black":
 			board.moveHistory[-1] = board.moveHistory[-1].replace('+','#')
 		games[key] = board.moveHistory
@@ -143,8 +132,11 @@ def main():
 		#earlystop = EarlyStopping(monitor='loss', min_delta=0.01, patience=5, verbose=1, mode='auto')
 		#callbacks_list = [earlystop]
 		#callbacks=callbacks_list,
-		walt.fit(train_w,train_w_rewards, batch_size=1, epochs=1, verbose=1)
-
+		if winner == "black" or winner == "white":
+			walt.fit(train_w,train_w_rewards, batch_size=4, epochs=12, verbose=1)
+		else:
+			walt.fit(train_w,train_w_rewards, batch_size=4, epochs=4, verbose=1)
+		print results
 		#train_b_array = [((x.ravel() + 6.0)/12.0).reshape(-1,64,1) for x in board.boardHistory[1::2]]
 		#train_b = np.vstack(train_b_array)
 		#train_b_rewards = np.array([])
