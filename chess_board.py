@@ -74,7 +74,11 @@ class Board:
 							moves.append(self.pawns[j] + "8R")
 							moves.append(self.pawns[j] + "8N")
 							moves.append(self.pawns[j] + "8B")
-						#Taking pawns
+						#Taking pawns and pieces
+						if 2 <= i + 1 <= 7 and 0 <= j + 1 <= 7 and self.board[i + 1][j + 1] < -1:
+							moves.append(self.pawns[j] + 'x' + self.coordinates[i + 1][j + 1])
+						if 2 <= i + 1 <= 7 and 0 <= j - 1 <= 7 and self.board[i + 1][j - 1] < -1:
+							moves.append(self.pawns[j] + 'x' + self.coordinates[i + 1][j - 1])
 						if j == 0:
 							if self.board[i+1][j+1] == -1: #and not check
 								moves.append(self.pawns[j] + 'x' + self.pawns[j+1] + str(i+2))
@@ -229,6 +233,10 @@ class Board:
 							moves.append(self.pawns[j] + "1N")
 							moves.append(self.pawns[j] + "1B")
 						#Taking pawns
+						if 0 <= i - 1 <= 5 and 0 <= j + 1 <= 7 and self.board[i - 1][j + 1] > 1:
+							moves.append(self.pawns[j] + 'x' + self.coordinates[i - 1][j + 1])
+						if 0 <= i - 1 <= 5 and 0 <= j - 1 <= 7 and self.board[i - 1][j - 1] > 1:
+							moves.append(self.pawns[j] + 'x' + self.coordinates[i - 1][j - 1])
 						if j == 0:
 							if self.board[i-1][j+1] == 1: #and not check
 								moves.append(self.pawns[j] + 'x' + self.pawns[j+1] + str(i))
