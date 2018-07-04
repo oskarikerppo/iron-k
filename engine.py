@@ -32,7 +32,7 @@ def main():
 		key = max(games.keys()) + 1
 	#bob = load_model('Models\\bob.h5')
 	walt = load_model('Models\\walt.h5')
-	epochs = 120
+	epochs = 30
 	results = []
 	for i in range(epochs):
 		print "--------------------NEW GAME-------------------"

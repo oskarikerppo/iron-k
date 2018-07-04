@@ -79,17 +79,17 @@ class Board:
 							moves.append(self.pawns[j] + 'x' + self.coordinates[i + 1][j + 1])
 						if 2 <= i + 1 <= 7 and 0 <= j - 1 <= 7 and self.board[i + 1][j - 1] < -1:
 							moves.append(self.pawns[j] + 'x' + self.coordinates[i + 1][j - 1])
-						if j == 0:
+						if j == 0 and i < 7:
 							if self.board[i+1][j+1] == -1: #and not check
 								moves.append(self.pawns[j] + 'x' + self.pawns[j+1] + str(i+2))
 							if i == 4 and self.board[i][j+1] == -1 and self.moveHistory[-1] == self.pawns[j+1] + str(i + 1) and self.pawns[j+1] + str(i + 2) not in self.moveHistory: #and not check
 								moves.append(self.pawns[j] + 'x' + self.pawns[j+1] + str(i + 2) + 'e.p.')
-						elif j == 7:
+						elif j == 7 and i < 7:
 							if self.board[i+1][j-1] == -1: #and not check
 								moves.append(self.pawns[j] + 'x' + self.pawns[j-1] + str(i+2))
 							if i == 4 and self.board[i][j-1] == -1 and self.moveHistory[-1] == self.pawns[j-1] + str(i + 1) and self.pawns[j-1] + str(i + 2) not in self.moveHistory: #and not check
 								moves.append(self.pawns[j] + 'x' + self.pawns[j-1] + str(i + 2) + 'e.p.')
-						else:
+						elif i < 7:
 							if self.board[i+1][j+1] == -1: #and not check
 								moves.append(self.pawns[j] + 'x' + self.pawns[j+1] + str(i+2))	
 							if self.board[i+1][j-1] == -1: #and not check
@@ -237,17 +237,17 @@ class Board:
 							moves.append(self.pawns[j] + 'x' + self.coordinates[i - 1][j + 1])
 						if 0 <= i - 1 <= 5 and 0 <= j - 1 <= 7 and self.board[i - 1][j - 1] > 1:
 							moves.append(self.pawns[j] + 'x' + self.coordinates[i - 1][j - 1])
-						if j == 0:
+						if j == 0 and i > 0:
 							if self.board[i-1][j+1] == 1: #and not check
 								moves.append(self.pawns[j] + 'x' + self.pawns[j+1] + str(i))
 							if i == 3 and self.board[i][j+1] == 1 and self.moveHistory[-1] == self.pawns[j+1] + str(i + 1) and self.pawns[j+1] + str(i) not in self.moveHistory: #and not check
 								moves.append(self.pawns[j] + 'x' + self.pawns[j+1] + str(i) + 'e.p.')
-						if j == 7:
+						if j == 7 and i > 0:
 							if self.board[i-1][j-1] == 1: #and not check
 								moves.append(self.pawns[j] + 'x' + self.pawns[j-1] + str(i))
 							if i == 3 and self.board[i][j-1] == 1 and self.moveHistory[-1] == self.pawns[j-1] + str(i + 1) and self.pawns[j-1] + str(i) not in self.moveHistory: #and not check
 								moves.append(self.pawns[j] + 'x' + self.pawns[j-1] + str(i) + 'e.p.')
-						if 0 < j < 7:
+						elif 0 < j < 7 and i > 0:
 							if self.board[i-1][j+1] == 1: #and not check
 								moves.append(self.pawns[j] + 'x' + self.pawns[j+1] + str(i))	
 							if self.board[i-1][j-1] == 1: #and not check
