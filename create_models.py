@@ -45,7 +45,9 @@ state2 = state2.ravel()
 state2 = (state2 + 6.0)/12.0
 state2 = np.reshape(state2,(-1,64,1))
 
-print W.predict(state)
+states = np.vstack((state, state2))
+
+print W.predict(states)
 W.save('Models\\walt.h5')
 
 
@@ -56,7 +58,7 @@ B.add(Conv1D(128, kernel_size=16,activation='relu',input_shape=(64,1),padding='s
 B.add(MaxPooling1D(pool_size=4,padding='same'))
 B.add(Flatten())
 B.add(Dense(512, activation='relu'))  
-B.add(Dense(512, activation='relu'))	               
+B.add(Dense(256, activation='relu'))	               
 B.add(Dense(1, activation='sigmoid'))
 #Compile model
 B.compile(loss=keras.losses.binary_crossentropy, optimizer=keras.optimizers.Adam(), metrics=["binary_accuracy"])

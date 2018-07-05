@@ -10,7 +10,7 @@ from random import randint
 #end of game conditions
 
 
-
+#BUG !!! PAWN TAKES LAST ROW MUST PROMOTE !!!! FIXED
 class Board:
 	def __init__(self):
 		self.newBoard()
@@ -76,9 +76,21 @@ class Board:
 							moves.append(self.pawns[j] + "8B")
 						#Taking pawns and pieces
 						if 2 <= i + 1 <= 7 and 0 <= j + 1 <= 7 and self.board[i + 1][j + 1] < -1:
-							moves.append(self.pawns[j] + 'x' + self.coordinates[i + 1][j + 1])
+							if i == 6:
+								moves.append(self.pawns[j] + 'x' + self.coordinates[i + 1][j + 1] + "Q")
+								moves.append(self.pawns[j] + 'x' + self.coordinates[i + 1][j + 1] + "R")
+								moves.append(self.pawns[j] + 'x' + self.coordinates[i + 1][j + 1] + "N")
+								moves.append(self.pawns[j] + 'x' + self.coordinates[i + 1][j + 1] + "B")
+							else:
+								moves.append(self.pawns[j] + 'x' + self.coordinates[i + 1][j + 1])
 						if 2 <= i + 1 <= 7 and 0 <= j - 1 <= 7 and self.board[i + 1][j - 1] < -1:
-							moves.append(self.pawns[j] + 'x' + self.coordinates[i + 1][j - 1])
+							if i == 6:
+								moves.append(self.pawns[j] + 'x' + self.coordinates[i + 1][j - 1] + "Q")
+								moves.append(self.pawns[j] + 'x' + self.coordinates[i + 1][j - 1] + "R")
+								moves.append(self.pawns[j] + 'x' + self.coordinates[i + 1][j - 1] + "N")
+								moves.append(self.pawns[j] + 'x' + self.coordinates[i + 1][j - 1] + "B")
+							else:
+								moves.append(self.pawns[j] + 'x' + self.coordinates[i + 1][j - 1])
 						if j == 0 and i < 7:
 							if self.board[i+1][j+1] == -1: #and not check
 								moves.append(self.pawns[j] + 'x' + self.pawns[j+1] + str(i+2))
@@ -234,9 +246,21 @@ class Board:
 							moves.append(self.pawns[j] + "1B")
 						#Taking pawns
 						if 0 <= i - 1 <= 5 and 0 <= j + 1 <= 7 and self.board[i - 1][j + 1] > 1:
-							moves.append(self.pawns[j] + 'x' + self.coordinates[i - 1][j + 1])
+							if i == 1:
+								moves.append(self.pawns[j] + 'x' + self.coordinates[i - 1][j + 1]+ 'Q')
+								moves.append(self.pawns[j] + 'x' + self.coordinates[i - 1][j + 1]+ 'R')
+								moves.append(self.pawns[j] + 'x' + self.coordinates[i - 1][j + 1]+ 'B')
+								moves.append(self.pawns[j] + 'x' + self.coordinates[i - 1][j + 1]+ 'N')
+							else:
+								moves.append(self.pawns[j] + 'x' + self.coordinates[i - 1][j + 1])
 						if 0 <= i - 1 <= 5 and 0 <= j - 1 <= 7 and self.board[i - 1][j - 1] > 1:
-							moves.append(self.pawns[j] + 'x' + self.coordinates[i - 1][j - 1])
+							if i == 1:
+								moves.append(self.pawns[j] + 'x' + self.coordinates[i - 1][j - 1]+ 'Q')
+								moves.append(self.pawns[j] + 'x' + self.coordinates[i - 1][j - 1]+ 'R')
+								moves.append(self.pawns[j] + 'x' + self.coordinates[i - 1][j - 1]+ 'B')
+								moves.append(self.pawns[j] + 'x' + self.coordinates[i - 1][j - 1]+ 'N')
+							else:
+								moves.append(self.pawns[j] + 'x' + self.coordinates[i - 1][j - 1])
 						if j == 0 and i > 0:
 							if self.board[i-1][j+1] == 1: #and not check
 								moves.append(self.pawns[j] + 'x' + self.pawns[j+1] + str(i))
@@ -540,6 +564,15 @@ class Board:
 			move = move[:-1]
 			was_check = True
 		#Pawns
+		if move[:1] in self.pawns and len(move) == 5:
+			if color == 1:
+				row = 6
+			else:
+				row = 1
+			self.board[row][self.pawns.index(move[:1])] = 0
+			target = move[2:4]
+			target = zip(*np.where(self.coordinates == target))[0]
+			self.board[row + color][target[1]] = color*self.pieces.index(move[-1])
 		if move[:1] in self.pawns and 'x' not in move and move[-1] not in self.pieces:
 			column = self.pawns.index(move[:1])
 			###print(color)

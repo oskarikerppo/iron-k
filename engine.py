@@ -32,10 +32,10 @@ def main():
 		key = max(games.keys()) + 1
 	#bob = load_model('Models\\bob.h5')
 	walt = load_model('Models\\walt.h5')
-	epochs = 30
+	epochs = 500
 	results = []
 	for i in range(epochs):
-		print "--------------------NEW GAME-------------------"
+		print "--------------------NEW GAME-------------------_  " + str(i)
 		beginning = time()
 		board = cb.Board()
 		board.newBoard()
@@ -51,22 +51,21 @@ def main():
 			#print "EXPLORATION: "
 			white_moves = board.legalMoves()
 			white_scores = []
+			board_to_nn = []
 			for move in white_moves:
 				board.makeMove(move)
-				board_to_nn = (np.reshape(board.board,(-1,64,1))+6.0)/12.0
-				if str(board_to_nn) in white_predictions.keys():
-					white_scores.append(white_predictions[str(board_to_nn)])
+				if len(board_to_nn) == 0:
+					board_to_nn = (np.reshape(board.board,(-1,64,1))+6.0)/12.0
 				else:
-					nn_prediction = walt.predict(board_to_nn)
-					white_scores.append(nn_prediction)
-					white_predictions[str(board_to_nn)] = nn_prediction
+					board_to_nn = np.vstack((board_to_nn, (np.reshape(board.board,(-1,64,1))+6.0)/12.0))
 				board.undoMove()
 			#if len(white_scores) > 9:
 			#	white_scores_sorted = np.sort(white_scores)
 			#	random_value = white_scores_sorted[-1*exploration]
 			#	board.makeMove(white_moves[np.where(white_scores == random_value)[0][0]])
 			#else:
-			board.makeMove(white_moves[np.argmax(white_scores)])
+			nn_prediction = walt.predict(board_to_nn)
+			board.makeMove(white_moves[np.argmax(nn_prediction)])
 			gameOver = board.gameOver()
 			if gameOver != False:
 				winner = gameOver
@@ -102,7 +101,7 @@ def main():
 		start = time()
 		if winner == "white" or winner == "black":
 			board.moveHistory[-1] = board.moveHistory[-1].replace('+','#')
-		games[key] = board.moveHistory
+		games[key] = board.moveHistory.append(winner)
 		key += 1
 
 		move_history = board.moveHistory
@@ -123,10 +122,10 @@ def main():
 		else:
 			walt_reward = -0.1
 			bob_reward = 0.1
-		train_w_array = [((x.ravel() + 6.0)/12.0).reshape(-1,64,1) for x in board.boardHistory[::2]]
+		train_w_array = [((x.ravel() + 6.0)/12.0).reshape(-1,64,1) for x in board.boardHistory[1::2]]
 		train_w = np.vstack(train_w_array)
 		train_w_rewards = np.array([])
-		for i in range(len(board.boardHistory[::2]), 0, -1):
+		for i in range(len(board.boardHistory[1::2]), 0, -1):
 			train_w_rewards = np.append(train_w_rewards, 0.5 + 0.5*walt_reward/i)
 		print train_w_rewards
 		#earlystop = EarlyStopping(monitor='loss', min_delta=0.01, patience=5, verbose=1, mode='auto')
