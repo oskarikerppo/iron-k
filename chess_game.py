@@ -95,26 +95,24 @@ def move_piece(destination):
             open_menu(bpromote_menu)
         else:
             open_menu(wpromote_menu)
-        return
-
-
-
-
-    for move in moves:
-        print board.coordinates[x][y] in move
-    for move in moves:
-        if board.coordinates[x][y] in move:
-            board.makeMove(move)
-            game_board = board.board
-            return "Moved"
-    if x == 0 or x == 7:
-        if y == 2:
-            board.makeMove("O-O-O")
-            game_board = board.board
-            return "Castled Long"
-        board.makeMove("O-O")
         game_board = board.board
-        return "Castled Short" 
+        return "Promoted"
+    else:
+        for move in moves:
+            print board.coordinates[x][y] in move
+        for move in moves:
+            if board.coordinates[x][y] in move:
+                board.makeMove(move)
+                game_board = board.board
+                return "Moved"
+        if x == 0 or x == 7:
+            if y == 2:
+                board.makeMove("O-O-O")
+                game_board = board.board
+                return "Castled Long"
+            board.makeMove("O-O")
+            game_board = board.board
+            return "Castled Short" 
     print "No move made!!! ERROR!!!"
     game_board = board.board  
     return False
@@ -311,8 +309,14 @@ while running:
         for i in wpromote_menu.get_pressed():   # Check selection
             print "Menu returned " + str(i)
             print str(target % 8)
+            print moves
             close_menu(wpromote_menu)
             for move in moves:
+                print move
+                print i
+                print board.coordinates[target / 8][target % 8]
+                print move.replace('+','').endswith(i)
+                print board.coordinates[target / 8][target % 8] in move
                 if move.replace('+','').endswith(i) and board.coordinates[target / 8][target % 8] in move:
                     board.makeMove(move)
             deselect_piece()
@@ -332,6 +336,11 @@ while running:
             print str(target % 8)
             close_menu(bpromote_menu)
             for move in moves:
+                print move
+                print i
+                print board.coordinates[target / 8][target % 8]
+                print move.replace('+','').endswith(i)
+                print board.coordinates[target / 8][target % 8] in move
                 if move.replace('+','').endswith(i) and board.coordinates[target / 8][target % 8] in move:
                     board.makeMove(move)
             deselect_piece()
