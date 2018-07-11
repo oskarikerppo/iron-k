@@ -20,6 +20,7 @@ class Board:
 		self.moves = []
 		self.pawns = ['a','b','c','d','e','f','g','h']
 		self.pieces = ['','','N','B','R','Q','K']
+		self.newBoard()
 
 
 	def newBoard(self):
@@ -48,7 +49,7 @@ class Board:
 		print(self.moveHistory)
 		
 
-	def legalMoves(self):
+	def legalMoves(self, coordinates=[]):
 		#Returns list of all legal moves for the side who's turn it is
 		sideToMove = self.sideToMove
 		moves = []
@@ -58,6 +59,9 @@ class Board:
 			#Pawns
 			for i in range(8):
 				for j in range(8):
+					if coordinates:
+						i = coordinates[0]
+						j = coordinates[1]
 					if self.board[i][j] == 0:
 						continue
 					elif self.board[i][j] == 1: #White Pawn
@@ -210,6 +214,11 @@ class Board:
 									elif self.board[i + k][j + l] < 0:
 										kingMoves.append('K' + self.coordinates[i][j] + 'x' +self.coordinates[i + k][j + l])
 						moves = moves + kingMoves
+					if coordinates:
+						break
+				else:
+					continue
+				break
 			if self.canCastleLong(self.sideToMove):
 				moves.append("O-O-O")
 			if self.canCastleShort(self.sideToMove):
@@ -228,6 +237,9 @@ class Board:
 			##print("Black to move")
 			for i in range(8):
 				for j in range(8):
+					if coordinates:
+						i = coordinates[0]
+						j = coordinates[1]
 					if self.board[i][j] == 0:
 						continue
 					elif self.board[i][j] == -1:#Black pawn
@@ -380,6 +392,11 @@ class Board:
 									elif self.board[i + k][j + l] > 0:
 										kingMoves.append('K' + self.coordinates[i][j] + 'x' +self.coordinates[i + k][j + l])
 						moves = moves + kingMoves
+					if coordinates:
+						break
+				else:
+					continue
+				break
 			if self.canCastleLong(self.sideToMove):
 				moves.append("O-O-O")
 			if self.canCastleShort(self.sideToMove):
@@ -691,6 +708,7 @@ class Board:
 		else:
 			self.sideToMove = 'white'
 
+
 	def undoMove(self):
 		if len(self.moveHistory) == 0:
 			##print("No moves have been made!")
@@ -938,58 +956,3 @@ class Board:
 						#print "level 4 else"
 						return "Insufficient material"
 		return False
-<<<<<<< HEAD
-
-
-"""
-x = Board()
-x.newBoard()
-
-x.makeMove('b4')
-x.makeMove('f5')
-x.makeMove('b5')
-x.makeMove('f4')
-x.makeMove('b6')
-x.makeMove('f3')
-x.makeMove('bxc7')
-x.makeMove('fxg2')
-print x.legalMoves()
-
-
-
-gameOver = False
-
-while not gameOver:
-	wm = x.legalMoves()
-	if "O-O" in wm:
-		print "Short castle possible by white!"
-	if "O-O-O" in wm:
-		"Print long castle possible by white!"
-	x.makeMove(wm[randint(0,len(wm)-1)])
-	gameOver = x.gameOver()
-	if gameOver:
-		print gameOver
-		break
-	bm = x.legalMoves()
-	if "O-O" in bm:
-		print "Short castle possible by black!"
-	if "O-O-O" in bm:
-		"Print long castle possible by black!"
-	x.makeMove(bm[randint(0,len(bm)-1)])
-	gameOver = x.gameOver()
-	if gameOver:
-		print gameOver
-		break
-
-if gameOver == "white" or gameOver == "black":
-	x.moveHistory[-1] = x.moveHistory[-1].replace('+','#')
-print x.gameOver()
-print x.moveHistory
-print (len(x.moveHistory))
-x.showBoard()
-unique, counts = np.unique(x.board, return_counts=True)
-piece_counts = dict(zip(unique, counts))
-piece_counts_keys = piece_counts.keys()
-print piece_counts
-print piece_counts_keys
-"""
