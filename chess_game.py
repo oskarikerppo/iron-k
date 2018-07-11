@@ -42,6 +42,9 @@ def reset_game():
     close_menu(win_menu)
     win_menu.event_off(5)
     win_menu.event_off(6)
+    win_menu.event_off(7)
+    win_menu.pressed_buttons = []
+
     
 def select_piece(location):
     """Attempts to select the piece at location"""
@@ -161,8 +164,10 @@ win_bg = Surface((250,90))
 win_bg.fill((0,0,0))
 draw.rect(win_bg,(255,255,255),(5,5,240,80))
 
-layer_black = Surface((50,50))
-layer_black.fill((128,128,128))
+layer_hunter = Surface((50,50))
+layer_hunter.fill((63,122,77))
+layer_skyblue = Surface((50,50))
+layer_skyblue.fill((230,230,250))
 layer_hovered = Surface((50,50))
 layer_hovered.fill((0,0,255))
 layer_selected = Surface((50,50))
@@ -192,7 +197,9 @@ board_buttons = [Button((100+(i%8)*50,450-(i//8)*50,50,50),i,(0,)) for i in rang
 
 for i in range(64):
     if (i+i//8)%2 == 0:
-        board_buttons[i].add_layer(layer_black,(0,0),(0,))
+        board_buttons[i].add_layer(layer_hunter,(0,0),(0,))
+    else:
+        board_buttons[i].add_layer(layer_skyblue,(0,0),(0,))
 
 new_game = Button((2,2,50,20),'new',(0,))
 new_game.add_layer(new_bg,(0,0),(2,))
@@ -215,6 +222,7 @@ add_objects(game_menu,board_buttons)
 add_objects(game_menu,(new_game, quit_button, undo_move))
 
 # Win menu
+
 win_menu = make_menu((175,270,250,90),'win',1)
 win_menu.add_layer(win_bg,(0,0),(5,6,7))
 win_menu.add_text("White wins!",font2,(0,0,0),(125,30),1,0,(5,))
@@ -229,7 +237,10 @@ quit2 = Button((180,60,50,20),'quit',(0,))
 quit2.add_layer(new_bg,(0,0),(2,))
 quit2.add_layer(new_bg2,(0,0),(0,-2))
 quit2.add_text("Quit",font1,(255,255,255),(25,10),1,0,(0,))
-win_menu.add_object(quit2)
+win_menu.add_object(quit2)      
+
+
+
 
 
 # Promotion menus

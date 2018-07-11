@@ -47,6 +47,7 @@ class _menu_object:
         self.event_flags = []
         self.fill = None
 
+
     def add_text(self,text,font,colour,textrect,alignment,awrap,events):
         """Adds a layer of text. Can be aligned and textwrapped.
         events is a tuple of events during which this text will be displayed."""
