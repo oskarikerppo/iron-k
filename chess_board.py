@@ -573,7 +573,7 @@ class Board:
 			target = move[2:4]
 			target = zip(*np.where(self.coordinates == target))[0]
 			self.board[row + color][target[1]] = color*self.pieces.index(move[-1])
-		if move[:1] in self.pawns and 'x' not in move and move[-1] not in self.pieces:
+		elif move[:1] in self.pawns and 'x' not in move and move[-1] not in self.pieces:
 			column = self.pawns.index(move[:1])
 			###print(color)
 			###print(column)
@@ -939,9 +939,22 @@ class Board:
 						return "Insufficient material"
 		return False
 
+
 """
 x = Board()
 x.newBoard()
+
+x.makeMove('b4')
+x.makeMove('f5')
+x.makeMove('b5')
+x.makeMove('f4')
+x.makeMove('b6')
+x.makeMove('f3')
+x.makeMove('bxc7')
+x.makeMove('fxg2')
+print x.legalMoves()
+
+
 
 gameOver = False
 

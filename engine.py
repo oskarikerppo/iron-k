@@ -32,10 +32,16 @@ def main():
 		key = max(games.keys()) + 1
 	#bob = load_model('Models\\bob.h5')
 	walt = load_model('Models\\walt.h5')
-	epochs = 500
+	epochs = 1000
 	results = []
+	white_wins = 0
+	black_wins = 0
+	stalemates = 0
 	for i in range(epochs):
 		print "--------------------NEW GAME-------------------_  " + str(i)
+		print "White wins: " + str(white_wins)
+		print  "Black wins: " + str(black_wins)
+		print "Stalemates: " + str(stalemates)
 		beginning = time()
 		board = cb.Board()
 		board.newBoard()
@@ -98,10 +104,13 @@ def main():
 				break
 			i += 1
 		print time() - start
+		print nn_prediction
+		print np.argmax(nn_prediction)
 		start = time()
 		if winner == "white" or winner == "black":
 			board.moveHistory[-1] = board.moveHistory[-1].replace('+','#')
-		games[key] = board.moveHistory.append(winner)
+		games[key] = board.moveHistory
+		games[key] = games.key.append(winner)
 		key += 1
 
 		move_history = board.moveHistory
@@ -116,9 +125,13 @@ def main():
 		if winner == "white":
 			walt_reward = 1.0
 			bob_reward = -1.0
+			white_wins += 1
 		elif winner == "black":
 			walt_reward = -1.0
 			bob_reward = 1.0		
+			black_wins += 1
+		elif winner == "stalemate":
+			stalemates += 1
 		else:
 			walt_reward = -0.1
 			bob_reward = 0.1
