@@ -938,6 +938,7 @@ class Board:
 						#print "level 4 else"
 						return "Insufficient material"
 		return False
+<<<<<<< HEAD
 
 
 """
