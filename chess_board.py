@@ -20,6 +20,7 @@ class Board:
 		self.moves = []
 		self.pawns = ['a','b','c','d','e','f','g','h']
 		self.pieces = ['','','N','B','R','Q','K']
+		self.newBoard()
 
 
 	def newBoard(self):
@@ -48,7 +49,7 @@ class Board:
 		print(self.moveHistory)
 		
 
-	def legalMoves(self):
+	def legalMoves(self, coordinates=[]):
 		#Returns list of all legal moves for the side who's turn it is
 		sideToMove = self.sideToMove
 		moves = []
@@ -58,6 +59,9 @@ class Board:
 			#Pawns
 			for i in range(8):
 				for j in range(8):
+					if coordinates:
+						i = coordinates[0]
+						j = coordinates[1]
 					if self.board[i][j] == 0:
 						continue
 					elif self.board[i][j] == 1: #White Pawn
@@ -76,9 +80,21 @@ class Board:
 							moves.append(self.pawns[j] + "8B")
 						#Taking pawns and pieces
 						if 2 <= i + 1 <= 7 and 0 <= j + 1 <= 7 and self.board[i + 1][j + 1] < -1:
-							moves.append(self.pawns[j] + 'x' + self.coordinates[i + 1][j + 1])
+							if i == 6:
+								moves.append(self.pawns[j] + 'x' + self.coordinates[i + 1][j + 1] + "Q")
+								moves.append(self.pawns[j] + 'x' + self.coordinates[i + 1][j + 1] + "R")
+								moves.append(self.pawns[j] + 'x' + self.coordinates[i + 1][j + 1] + "N")
+								moves.append(self.pawns[j] + 'x' + self.coordinates[i + 1][j + 1] + "B")
+							else:
+								moves.append(self.pawns[j] + 'x' + self.coordinates[i + 1][j + 1])
 						if 2 <= i + 1 <= 7 and 0 <= j - 1 <= 7 and self.board[i + 1][j - 1] < -1:
-							moves.append(self.pawns[j] + 'x' + self.coordinates[i + 1][j - 1])
+							if i == 6:
+								moves.append(self.pawns[j] + 'x' + self.coordinates[i + 1][j - 1] + "Q")
+								moves.append(self.pawns[j] + 'x' + self.coordinates[i + 1][j - 1] + "R")
+								moves.append(self.pawns[j] + 'x' + self.coordinates[i + 1][j - 1] + "N")
+								moves.append(self.pawns[j] + 'x' + self.coordinates[i + 1][j - 1] + "B")
+							else:
+								moves.append(self.pawns[j] + 'x' + self.coordinates[i + 1][j - 1])
 						if j == 0 and i < 7:
 							if self.board[i+1][j+1] == -1: #and not check
 								moves.append(self.pawns[j] + 'x' + self.pawns[j+1] + str(i+2))
@@ -198,6 +214,11 @@ class Board:
 									elif self.board[i + k][j + l] < 0:
 										kingMoves.append('K' + self.coordinates[i][j] + 'x' +self.coordinates[i + k][j + l])
 						moves = moves + kingMoves
+					if coordinates:
+						break
+				else:
+					continue
+				break
 			if self.canCastleLong(self.sideToMove):
 				moves.append("O-O-O")
 			if self.canCastleShort(self.sideToMove):
@@ -216,6 +237,9 @@ class Board:
 			##print("Black to move")
 			for i in range(8):
 				for j in range(8):
+					if coordinates:
+						i = coordinates[0]
+						j = coordinates[1]
 					if self.board[i][j] == 0:
 						continue
 					elif self.board[i][j] == -1:#Black pawn
@@ -234,9 +258,21 @@ class Board:
 							moves.append(self.pawns[j] + "1B")
 						#Taking pawns
 						if 0 <= i - 1 <= 5 and 0 <= j + 1 <= 7 and self.board[i - 1][j + 1] > 1:
-							moves.append(self.pawns[j] + 'x' + self.coordinates[i - 1][j + 1])
+							if i == 1:
+								moves.append(self.pawns[j] + 'x' + self.coordinates[i - 1][j + 1]+ 'Q')
+								moves.append(self.pawns[j] + 'x' + self.coordinates[i - 1][j + 1]+ 'R')
+								moves.append(self.pawns[j] + 'x' + self.coordinates[i - 1][j + 1]+ 'B')
+								moves.append(self.pawns[j] + 'x' + self.coordinates[i - 1][j + 1]+ 'N')
+							else:
+								moves.append(self.pawns[j] + 'x' + self.coordinates[i - 1][j + 1])
 						if 0 <= i - 1 <= 5 and 0 <= j - 1 <= 7 and self.board[i - 1][j - 1] > 1:
-							moves.append(self.pawns[j] + 'x' + self.coordinates[i - 1][j - 1])
+							if i == 1:
+								moves.append(self.pawns[j] + 'x' + self.coordinates[i - 1][j - 1]+ 'Q')
+								moves.append(self.pawns[j] + 'x' + self.coordinates[i - 1][j - 1]+ 'R')
+								moves.append(self.pawns[j] + 'x' + self.coordinates[i - 1][j - 1]+ 'B')
+								moves.append(self.pawns[j] + 'x' + self.coordinates[i - 1][j - 1]+ 'N')
+							else:
+								moves.append(self.pawns[j] + 'x' + self.coordinates[i - 1][j - 1])
 						if j == 0 and i > 0:
 							if self.board[i-1][j+1] == 1: #and not check
 								moves.append(self.pawns[j] + 'x' + self.pawns[j+1] + str(i))
@@ -356,6 +392,11 @@ class Board:
 									elif self.board[i + k][j + l] > 0:
 										kingMoves.append('K' + self.coordinates[i][j] + 'x' +self.coordinates[i + k][j + l])
 						moves = moves + kingMoves
+					if coordinates:
+						break
+				else:
+					continue
+				break
 			if self.canCastleLong(self.sideToMove):
 				moves.append("O-O-O")
 			if self.canCastleShort(self.sideToMove):
@@ -540,7 +581,16 @@ class Board:
 			move = move[:-1]
 			was_check = True
 		#Pawns
-		if move[:1] in self.pawns and 'x' not in move and move[-1] not in self.pieces:
+		if move[:1] in self.pawns and len(move) == 5:
+			if color == 1:
+				row = 6
+			else:
+				row = 1
+			self.board[row][self.pawns.index(move[:1])] = 0
+			target = move[2:4]
+			target = zip(*np.where(self.coordinates == target))[0]
+			self.board[row + color][target[1]] = color*self.pieces.index(move[-1])
+		elif move[:1] in self.pawns and 'x' not in move and move[-1] not in self.pieces:
 			column = self.pawns.index(move[:1])
 			###print(color)
 			###print(column)
@@ -657,6 +707,7 @@ class Board:
 			self.sideToMove = 'black'
 		else:
 			self.sideToMove = 'white'
+
 
 	def undoMove(self):
 		if len(self.moveHistory) == 0:
@@ -905,10 +956,10 @@ class Board:
 						#print "level 4 else"
 						return "Insufficient material"
 		return False
-
 """
+
 x = Board()
-x.newBoard()
+
 
 gameOver = False
 

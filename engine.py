@@ -123,10 +123,10 @@ def main():
 		else:
 			walt_reward = -0.1
 			bob_reward = 0.1
-		train_w_array = [((x.ravel() + 6.0)/12.0).reshape(-1,64,1) for x in board.boardHistory[::2]]
+		train_w_array = [((x.ravel() + 6.0)/12.0).reshape(-1,64,1) for x in board.boardHistory[1::2]]
 		train_w = np.vstack(train_w_array)
 		train_w_rewards = np.array([])
-		for i in range(len(board.boardHistory[::2]), 0, -1):
+		for i in range(len(board.boardHistory[1::2]), 0, -1):
 			train_w_rewards = np.append(train_w_rewards, 0.5 + 0.5*walt_reward/i)
 		print train_w_rewards
 		#earlystop = EarlyStopping(monitor='loss', min_delta=0.01, patience=5, verbose=1, mode='auto')
