@@ -3,8 +3,8 @@ from random import randint
 from time import time
 import numpy as np
 import ast
-import sys
-
+from os import listdir
+from os.path import isfile, join
 
 import keras
 from keras.models import Sequential, Input, Model
@@ -24,25 +24,47 @@ from keras.callbacks import EarlyStopping
 #Show predictions of moves to show that they are changing
 
 def main():
-	with open('Games\\generation_3.txt', 'r+') as file:
-		games = file.read()
-	games = ast.literal_eval(games)
+
+	game_files = [f for f in listdir("Games") if isfile(join("Games", f))]
+	game_files = [x for x in game_files if 'generation' in x]
+	game_files.sort(key=lambda x: int(x.split('_')[-1][:-4]),reverse=True)
+	previous_generation = int(game_files[0].split('_')[-1][:-4])
+	next_generation = previous_generation + 1
+	gen = 'generation_' + str(next_generation) + '.txt' 
+	if next_generation % 2 == 0:
+		evolving = 'black'
+	else:
+		evolving = 'white'
+	#with open('Games\\generation_3.txt', 'r+') as file:
+	#	games = file.read()
+	#games = ast.literal_eval(games)
+	games = {}
 	if not games.keys():
 		key = 1
 	else:
 		key = max(games.keys()) + 1
 	#bob = load_model('Models\\bob.h5')
-	walt = load_model('Models\\walt_gen_1_child_0.h5')
-	bob = load_model('Models\\bob_gen_2_child_0.h5')
+	engine_files = [f for f in listdir("Models") if isfile(join("Models", f))]
+	engine_files = [x for x in engine_files if 'gen' in x and 'child' in x]
+	engine_files.sort(key=lambda x: int(x.split('_')[2]),reverse=True)
+	if next_generation % 2 == 0:
+		walt_file = engine_files[0]
+		bob_file = engine_files[1]
+	else:
+		walt_file = engine_files[1]
+		bob_file = engine_files[0]		
+	print walt_file, bob_file
+	walt = load_model('Models\\' + walt_file)
+	bob = load_model('Models\\' + bob_file)
 
 	print "--------------------EVOLVING----------------------"
 
-	evolving = sys.argv[1]
+	
 	results = []
 	while evolving not in results:
 		results = []
 		if evolving == 'white':
-			walt_child_1 = load_model('Models\\walt_gen_1_child_0.h5')
+			walt_child_1 = load_model('Models\\' + walt_file)
 			weights = walt_child_1.get_weights()
 			for i in range(len(weights)):
 				if len(weights[i].shape) == 1:
@@ -60,7 +82,7 @@ def main():
 									weights[i][j][k] += modification						
 			walt_child_1.set_weights(weights)
 
-			walt_child_2 = load_model('Models\\walt_gen_1_child_0.h5')
+			walt_child_2 = load_model('Models\\' + walt_file)
 			weights = walt_child_2.get_weights()
 			for i in range(len(weights)):
 				if len(weights[i].shape) == 1:
@@ -78,7 +100,7 @@ def main():
 									weights[i][j][k] += modification						
 			walt_child_2.set_weights(weights)
 
-			walt_child_3 = load_model('Models\\walt_gen_1_child_0.h5')
+			walt_child_3 = load_model('Models\\' + walt_file)
 			weights = walt_child_3.get_weights()
 			for i in range(len(weights)):
 				if len(weights[i].shape) == 1:
@@ -96,7 +118,7 @@ def main():
 									weights[i][j][k] += modification						
 			walt_child_3.set_weights(weights)
 
-			walt_child_4 = load_model('Models\\walt_gen_1_child_0.h5')
+			walt_child_4 = load_model('Models\\' + walt_file)
 			weights = walt_child_4.get_weights()
 			for i in range(len(weights)):
 				if len(weights[i].shape) == 1:
@@ -115,7 +137,7 @@ def main():
 			walt_child_4.set_weights(weights)
 
 		elif evolving == 'black':
-			bob_child_1 = load_model('Models\\bob_gen_2_child_0.h5')
+			bob_child_1 = load_model('Models\\' + bob_file)
 			weights = bob_child_1.get_weights()
 			for i in range(len(weights)):
 				if len(weights[i].shape) == 1:
@@ -133,7 +155,7 @@ def main():
 									weights[i][j][k] += modification						
 			bob_child_1.set_weights(weights)
 
-			bob_child_2 = load_model('Models\\bob_gen_2_child_0.h5')
+			bob_child_2 = load_model('Models\\' + bob_file)
 			weights = bob_child_2.get_weights()
 			for i in range(len(weights)):
 				if len(weights[i].shape) == 1:
@@ -151,7 +173,7 @@ def main():
 									weights[i][j][k] += modification						
 			bob_child_2.set_weights(weights)
 
-			bob_child_3 = load_model('Models\\bob_gen_2_child_0.h5')
+			bob_child_3 = load_model('Models\\' + bob_file)
 			weights = bob_child_3.get_weights()
 			for i in range(len(weights)):
 				if len(weights[i].shape) == 1:
@@ -169,7 +191,7 @@ def main():
 									weights[i][j][k] += modification						
 			bob_child_3.set_weights(weights)
 
-			bob_child_4 = load_model('Models\\bob_gen_2_child_0.h5')
+			bob_child_4 = load_model('Models\\' + bob_file)
 			weights = bob_child_4.get_weights()
 			for i in range(len(weights)):
 				if len(weights[i].shape) == 1:
@@ -259,15 +281,24 @@ def main():
 			results.append(winner)
 			print start - beginning
 			print "Game over!"
+			if winner == evolving:
+				break
 
 
-	with open('Games\\generation_3.txt', 'w+') as file:
+	with open('Games\\' + gen, 'w+') as file:
 		file.write(str(games))
 
-	#bob.save('Models\\bob.h5')
-	for i in range(len(results)):
-		if results[i] == 'white':
-			childs[i].save(r'Models\walt_gen_3_child_' + str(i) + '.h5')
+	if next_generation % 2 == 0:
+		for i in range(len(results)):
+			if results[i] == 'black':
+				childs[i].save(r'Models\bob_gen_' + str(next_generation) +'_child_' + str(i) + '.h5')
+	else:
+		for i in range(len(results)):
+			if results[i] == 'white':
+				childs[i].save(r'Models\walt_gen_' + str(next_generation) +'_child_' + str(i) + '.h5')
+	print "Generation " + str(next_generation) + " is born! Next model was the " + str(key) + "th child."
+
+
 
 if __name__ == "__main__":
 	main()
