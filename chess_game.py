@@ -345,7 +345,7 @@ if play_or_replay == 'replay':
                     running = 0
                 elif c == 'fwd':
                     if current_move < len(move_list):
-                        board.makeMove(move_list[current_move])
+                        board.makeMove(move_list[current_move].replace('#','+'))
                         current_move += 1
                     game_board = board.board
                     #continue
