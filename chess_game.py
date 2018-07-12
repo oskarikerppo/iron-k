@@ -4,7 +4,7 @@ import numpy as np
 import ast
 from os import listdir
 from os.path import isfile, join
-import time
+from time import time as timet
 
 import os
 import sys
@@ -644,7 +644,7 @@ else:
                         chars += evnt.unicode
 
             if board.sideToMove == ai_side:
-                ai_start = time.time()
+                ai_start = timet()
                 moves = board.legalMoves()
                 if len(moves) > 0:
                     #move = randint(0, len(moves)-1)
@@ -679,18 +679,18 @@ else:
                                 board.undoMove()
                             board_to_bob.append(bob_current_moves)
                             board.undoMove()
-                        predict_1_start = time.time()
+                        predict_1_start = timet()
                         nn_prediction = walt.predict(board_to_nn)
-                        predict_1_end = time.time()
+                        predict_1_end = timet()
                         nn_prediction_2 = []
-                        predict_2_start = time.time()
+                        predict_2_start = timet()
                         for i in range(len(board_to_bob)):
                             if type(board_to_bob[i]) == float:
                                 nn_prediction_2.append(board_to_bob[i])
                             else:
                                 bob_predictions = bob.predict(board_to_bob[i])
                                 nn_prediction_2.append(np.max(bob_predictions))
-                        predict_2_end = time.time()
+                        predict_2_end = timet()
                         best_move = 0
                         best_evaluation = -500
                         for i in range(len(nn_prediction)):
@@ -702,7 +702,7 @@ else:
                         print "Best move: " + str(best_move)
                         print "Best evaluation: " + str(best_evaluation)
                         board.makeMove(white_moves[best_move])
-                        ai_end = time.time()
+                        ai_end = timet()
                         print "Total time passed: " + str(ai_end - ai_start)
                         print "Walt predictions took: " + str(predict_1_end - predict_1_start)
                         print "Bob predictions took " + str(predict_2_end - predict_2_start)
@@ -737,18 +737,18 @@ else:
                                 board.undoMove()
                             board_to_walt.append(walt_current_moves)
                             board.undoMove()
-                        predict_1_start = time.time()
+                        predict_1_start = timet()
                         nn_prediction = bob.predict(board_to_nn)
-                        predict_1_end = time.time()
+                        predict_1_end = timet()
                         nn_prediction_2 = []
-                        predict_2_start = time.time()
+                        predict_2_start = timet()
                         for i in range(len(board_to_walt)):
                             if type(board_to_walt[i]) == float:
                                 nn_prediction_2.append(board_to_walt[i])
                             else:
                                 walt_predictions = walt.predict(board_to_walt[i])
                                 nn_prediction_2.append(max(walt_predictions))
-                        predict_2_end = time.time()
+                        predict_2_end = timet()
                         best_move = 0
                         best_evaluation = -500
                         for i in range(len(nn_prediction)):
@@ -760,12 +760,12 @@ else:
                         print "Best move: " + str(best_move)
                         print "Best evaluation: " + str(best_evaluation)
                         board.makeMove(black_moves[best_move])
-                        ai_end = time.time()
+                        ai_end = timet()
                         print "Total time passed: " + str(ai_end - ai_start)
                         print "Walt predictions took: " + str(predict_1_end - predict_1_start)
                         print "Bob predictions took " + str(predict_2_end - predict_2_start)
-                        print "Walt percentage: " + str((predict_1_end - predict_1_start)/(predict_1_end - predict_1_start + predict_2_end - predict_2_start + ai_end - ai_start))
-                        print "Bob percentage: " + str((predict_2_end - predict_2_start)/(predict_1_end - predict_1_start + predict_2_end - predict_2_start + ai_end - ai_start))
+                        print "Walt percentage: " + str((predict_1_end - predict_1_start)/(ai_end - ai_start))
+                        print "Bob percentage: " + str((predict_2_end - predict_2_start)/(ai_end - ai_start))
 
             lc,rc = mouse.get_pressed()[0:2]
             mx,my = mouse.get_pos()
