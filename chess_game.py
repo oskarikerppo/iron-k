@@ -706,8 +706,8 @@ else:
                         print "Total time passed: " + str(ai_end - ai_start)
                         print "Walt predictions took: " + str(predict_1_end - predict_1_start)
                         print "Bob predictions took " + str(predict_2_end - predict_2_start)
-                        print "Walt percentage: " + str((predict_1_end - predict_1_start)/(predict_1_end - predict_1_start + predict_2_end - predict_2_start + ai_end - ai_start))
-                        print "Bob percentage: " + str((predict_2_end - predict_2_start)/(predict_1_end - predict_1_start + predict_2_end - predict_2_start + ai_end - ai_start))
+                        print "Walt percentage: " + str((predict_1_end - predict_1_start)/(ai_end - ai_start))
+                        print "Bob percentage: " + str((predict_2_end - predict_2_start)/(ai_end - ai_start))
                     else:
                         black_moves = board.legalMoves()
                         board_to_nn = []
