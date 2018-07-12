@@ -605,6 +605,12 @@ else:
             time.wait(10)
 
     else:
+
+        player_side = raw_input("Would you like to play as white or black? ")
+        if player_side == 'white':
+            ai_side = 'black'
+        else:
+            ai_side = 'white'
         add_objects(game_menu,(new_game, quit_button, undo_move))
 
         #Load engine here
@@ -623,7 +629,7 @@ else:
                     else:
                         chars += evnt.unicode
 
-            if board.sideToMove == "black":
+            if board.sideToMove == ai_side:
                 moves = board.legalMoves()
                 if len(moves) > 0:
                     move = randint(0, len(moves)-1)
@@ -696,6 +702,7 @@ else:
                     elif c == 'quit':   # Exit game button
                         running = 0
                     elif c == 'undo':
+                        board.undoMove()
                         board.undoMove()
                         game_board = board.board
                         continue
