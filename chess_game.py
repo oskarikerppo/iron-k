@@ -396,209 +396,425 @@ if play_or_replay == 'replay':
         time.wait(10)
 else:
 
-    add_objects(game_menu,(new_game, quit_button, undo_move))
+    opponent = raw_input("Would you like to play against AI or another player? ")
+    if opponent == 'player':
+
+        add_objects(game_menu,(new_game, quit_button, undo_move))
 
 
 
 
-    running = 1
-    while running:  
-        """ STEP 1: Get inputs """
-        chars = ''
-        for evnt in event.get():
-            if evnt.type == QUIT:
-                running = 0
-            elif evnt.type == KEYDOWN:
-                if evnt.key == K_ESCAPE:
+        running = 1
+        while running:  
+            """ STEP 1: Get inputs """
+            chars = ''
+            for evnt in event.get():
+                if evnt.type == QUIT:
                     running = 0
-                else:
-                    chars += evnt.unicode
-
-        lc,rc = mouse.get_pressed()[0:2]
-        mx,my = mouse.get_pos()
-
-        """ STEP 2: Handle inputs / update menus """
-
-        update_menus(mx,my,lc,chars)
-
-        if is_menu_open(wpromote_menu):  # Promotion menus
-            for i in wpromote_menu.get_pressed():   # Check selection
-                print "Menu returned " + str(i)
-                print str(target % 8)
-                print moves
-                close_menu(wpromote_menu)
-                for move in moves:
-                    print move
-                    print i
-                    print board.coordinates[target / 8][target % 8]
-                    print move.replace('+','').endswith(i)
-                    print board.coordinates[target / 8][target % 8] in move
-                    if move.replace('+','').endswith(i) and board.coordinates[target / 8][target % 8] in move:
-                        board.makeMove(move)
-                deselect_piece()
-                game_over = board.gameOver() 
-                if game_over == "white":
-                        open_menu(win_menu)
-                        win_menu.event_on(5)
-                elif game_over == "black":
-                    open_menu(win_menu)
-                    win_menu.event_on(6)
-                elif game_over:
-                    open_menu(win_menu)
-                    win_menu.event_on(7)
-        if  is_menu_open(bpromote_menu):
-            for i in bpromote_menu.get_pressed():   # Check selection
-                print "Menu returned " + str(i)
-                print str(target % 8)
-                close_menu(bpromote_menu)
-                for move in moves:
-                    print move
-                    print i
-                    print board.coordinates[target / 8][target % 8]
-                    print move.replace('+','').endswith(i)
-                    print board.coordinates[target / 8][target % 8] in move
-                    if move.replace('+','').endswith(i) and board.coordinates[target / 8][target % 8] in move:
-                        board.makeMove(move)
-                deselect_piece()
-                game_over = board.gameOver() 
-                if game_over == "white":
-                        open_menu(win_menu)
-                        win_menu.event_on(5)
-                elif game_over == "black":
-                    open_menu(win_menu)
-                    win_menu.event_on(6)
-                elif game_over:
-                    open_menu(win_menu)
-                    win_menu.event_on(7)
-
-
-        elif is_menu_open(game_menu):
-            # Handle the game board and game menu
-            for c in game_menu.get_pressed():
-                if c == 'new':      # Reset game button
-                    reset_game()
-                elif c == 'quit':   # Exit game button
-                    running = 0
-                elif c == 'undo':
-                    board.undoMove()
-                    game_board = board.board
-                    continue
-                else:
-                    if selected == None:    # Select piece that was clicked on
-                        print "Valitaan " + str(c)
-                        select_piece(c)
+                elif evnt.type == KEYDOWN:
+                    if evnt.key == K_ESCAPE:
+                        running = 0
                     else:
-                        if selected == c:   # Deselect currently selected piece
-                            print "Poistetaan valinta " + str(c)
-                            deselect_piece()
+                        chars += evnt.unicode
+
+            lc,rc = mouse.get_pressed()[0:2]
+            mx,my = mouse.get_pos()
+
+            """ STEP 2: Handle inputs / update menus """
+
+            update_menus(mx,my,lc,chars)
+
+            if is_menu_open(wpromote_menu):  # Promotion menus
+                for i in wpromote_menu.get_pressed():   # Check selection
+                    print "Menu returned " + str(i)
+                    print str(target % 8)
+                    print moves
+                    close_menu(wpromote_menu)
+                    for move in moves:
+                        print move
+                        print i
+                        print board.coordinates[target / 8][target % 8]
+                        print move.replace('+','').endswith(i)
+                        print board.coordinates[target / 8][target % 8] in move
+                        if move.replace('+','').endswith(i) and board.coordinates[target / 8][target % 8] in move:
+                            board.makeMove(move)
+                    deselect_piece()
+                    game_over = board.gameOver() 
+                    if game_over == "white":
+                            open_menu(win_menu)
+                            win_menu.event_on(5)
+                    elif game_over == "black":
+                        open_menu(win_menu)
+                        win_menu.event_on(6)
+                    elif game_over:
+                        open_menu(win_menu)
+                        win_menu.event_on(7)
+            if  is_menu_open(bpromote_menu):
+                for i in bpromote_menu.get_pressed():   # Check selection
+                    print "Menu returned " + str(i)
+                    print str(target % 8)
+                    close_menu(bpromote_menu)
+                    for move in moves:
+                        print move
+                        print i
+                        print board.coordinates[target / 8][target % 8]
+                        print move.replace('+','').endswith(i)
+                        print board.coordinates[target / 8][target % 8] in move
+                        if move.replace('+','').endswith(i) and board.coordinates[target / 8][target % 8] in move:
+                            board.makeMove(move)
+                    deselect_piece()
+                    game_over = board.gameOver() 
+                    if game_over == "white":
+                            open_menu(win_menu)
+                            win_menu.event_on(5)
+                    elif game_over == "black":
+                        open_menu(win_menu)
+                        win_menu.event_on(6)
+                    elif game_over:
+                        open_menu(win_menu)
+                        win_menu.event_on(7)
+
+
+            elif is_menu_open(game_menu):
+                # Handle the game board and game menu
+                for c in game_menu.get_pressed():
+                    if c == 'new':      # Reset game button
+                        reset_game()
+                    elif c == 'quit':   # Exit game button
+                        running = 0
+                    elif c == 'undo':
+                        board.undoMove()
+                        game_board = board.board
+                        continue
+                    else:
+                        if selected == None:    # Select piece that was clicked on
+                            print "Valitaan " + str(c)
+                            select_piece(c)
                         else:
-                            if not move_piece(c):
+                            if selected == c:   # Deselect currently selected piece
+                                print "Poistetaan valinta " + str(c)
                                 deselect_piece()
-                                select_piece(c)
-                            if not is_menu_open(wpromote_menu) and not is_menu_open(bpromote_menu):
-                                deselect_piece()
-                                game_over = board.gameOver() 
-                                if game_over == "white":
-                                        open_menu(win_menu)
-                                        win_menu.event_on(5)
-                                elif game_over == "black":
-                                    open_menu(win_menu)
-                                    win_menu.event_on(6)
-                                elif game_over:
-                                    open_menu(win_menu)
-                                    win_menu.event_on(7)
                             else:
-                                break
+                                if not move_piece(c):
+                                    deselect_piece()
+                                    select_piece(c)
+                                if not is_menu_open(wpromote_menu) and not is_menu_open(bpromote_menu):
+                                    deselect_piece()
+                                    game_over = board.gameOver() 
+                                    if game_over == "white":
+                                            open_menu(win_menu)
+                                            win_menu.event_on(5)
+                                    elif game_over == "black":
+                                        open_menu(win_menu)
+                                        win_menu.event_on(6)
+                                    elif game_over:
+                                        open_menu(win_menu)
+                                        win_menu.event_on(7)
+                                else:
+                                    break
 
 
-        if is_menu_open(win_menu):
-            for i in win_menu.get_pressed():
-                if i == 'quit':
+            if is_menu_open(win_menu):
+                for i in win_menu.get_pressed():
+                    if i == 'quit':
+                        running = 0
+                    elif i == 'new':
+                        reset_game()
+                    elif i == 'undo':
+                        board.undoMove()
+
+            """ STEP 3: Draw menus """
+
+            update_menu_images()
+
+            if is_menu_open(game_menu):
+                """
+                # Show which pieces are captured
+                i = 0
+                p = 0
+                for piece in wcaptured:
+                    if piece == "P":
+                        if p == 0:
+                            game_menu.blit(pawn2,(0,50))
+                        p += 1
+                    else:
+                        i += 50
+                    if piece == "B": game_menu.blit(bishop2,(0,50+i))
+                    if piece == "N": game_menu.blit(knight2,(0,50+i))
+                    if piece == "R": game_menu.blit(rook2,(0,50+i))
+                    if piece == "Q": game_menu.blit(queen2,(0,50+i))
+                if p != 0:
+                    msg = font1.render(str(p),1,(255,255,255))
+                    game_menu.blit(msg,(20,68))
+
+                i = 0
+                p = 0
+                for piece in bcaptured:
+                    if piece == "P":
+                        if p == 0:
+                            game_menu.blit(pawn1,(550,50))
+                        p += 1
+                    else:
+                        i += 50
+                    if piece == "B": game_menu.blit(bishop1,(550,50+i))
+                    if piece == "N": game_menu.blit(knight1,(550,50+i))
+                    if piece == "R": game_menu.blit(rook1,(550,50+i))
+                    if piece == "Q": game_menu.blit(queen1,(550,50+i))
+                if p != 0:
+                    msg = font1.render(str(p),1,(0,0,0))
+                    game_menu.blit(msg,(570,68))
+                """
+                # Draw the pieces on the game board
+                game_board = board.board
+                for i in range(64):
+                    x = i / 8
+                    y = i % 8
+                    if game_board[x][y] == 0:
+                        continue
+                    elif game_board[x][y] == 1:
+                        game_menu.blit(pawn1,(100+(i%8)*50,450-(i//8)*50))
+                    elif game_board[x][y] == -1:
+                        game_menu.blit(pawn2,(100+(i%8)*50,450-(i//8)*50))
+                    elif game_board[x][y] == 6:
+                        game_menu.blit(king1,(100+(i%8)*50,450-(i//8)*50))
+                    elif game_board[x][y] == -6:
+                        game_menu.blit(king2,(100+(i%8)*50,450-(i//8)*50))
+                    elif game_board[x][y] == 5:
+                        game_menu.blit(queen1,(100+(i%8)*50,450-(i//8)*50))
+                    elif game_board[x][y] == -5:
+                        game_menu.blit(queen2,(100+(i%8)*50,450-(i//8)*50))
+                    elif game_board[x][y] == 4:
+                        game_menu.blit(rook1,(100+(i%8)*50,450-(i//8)*50))
+                    elif game_board[x][y] == -4:
+                        game_menu.blit(rook2,(100+(i%8)*50,450-(i//8)*50))
+                    elif game_board[x][y] == 3:
+                        game_menu.blit(bishop1,(100+(i%8)*50,450-(i//8)*50))
+                    elif game_board[x][y] == -3:
+                        game_menu.blit(bishop2,(100+(i%8)*50,450-(i//8)*50))
+                    elif game_board[x][y] == 2:
+                        game_menu.blit(knight1,(100+(i%8)*50,450-(i//8)*50))
+                    elif game_board[x][y] == -2:
+                        game_menu.blit(knight2,(100+(i%8)*50,450-(i//8)*50))
+
+            screen.fill((255,255,255))
+            draw.rect(screen,(0,0,0),(50,50,500,500))
+            draw.rect(screen,(255,255,255),(100,100,400,400))
+            draw_menus(screen)
+
+            display.flip()
+            time.wait(10)
+
+    else:
+        add_objects(game_menu,(new_game, quit_button, undo_move))
+
+        #Load engine here
+
+
+        running = 1
+        while running:  
+            """ STEP 1: Get inputs """
+            chars = ''
+            for evnt in event.get():
+                if evnt.type == QUIT:
                     running = 0
-                elif i == 'new':
-                    reset_game()
-                elif i == 'undo':
-                    board.undoMove()
+                elif evnt.type == KEYDOWN:
+                    if evnt.key == K_ESCAPE:
+                        running = 0
+                    else:
+                        chars += evnt.unicode
 
-        """ STEP 3: Draw menus """
+            if board.sideToMove == "black":
+                moves = board.legalMoves()
+                if len(moves) > 0:
+                    move = randint(0, len(moves)-1)
+                    board.makeMove(moves[move])
+                    game_board = board.board
 
-        update_menu_images()
+            lc,rc = mouse.get_pressed()[0:2]
+            mx,my = mouse.get_pos()
 
-        if is_menu_open(game_menu):
-            """
-            # Show which pieces are captured
-            i = 0
-            p = 0
-            for piece in wcaptured:
-                if piece == "P":
-                    if p == 0:
-                        game_menu.blit(pawn2,(0,50))
-                    p += 1
-                else:
-                    i += 50
-                if piece == "B": game_menu.blit(bishop2,(0,50+i))
-                if piece == "N": game_menu.blit(knight2,(0,50+i))
-                if piece == "R": game_menu.blit(rook2,(0,50+i))
-                if piece == "Q": game_menu.blit(queen2,(0,50+i))
-            if p != 0:
-                msg = font1.render(str(p),1,(255,255,255))
-                game_menu.blit(msg,(20,68))
+            """ STEP 2: Handle inputs / update menus """
 
-            i = 0
-            p = 0
-            for piece in bcaptured:
-                if piece == "P":
-                    if p == 0:
-                        game_menu.blit(pawn1,(550,50))
-                    p += 1
-                else:
-                    i += 50
-                if piece == "B": game_menu.blit(bishop1,(550,50+i))
-                if piece == "N": game_menu.blit(knight1,(550,50+i))
-                if piece == "R": game_menu.blit(rook1,(550,50+i))
-                if piece == "Q": game_menu.blit(queen1,(550,50+i))
-            if p != 0:
-                msg = font1.render(str(p),1,(0,0,0))
-                game_menu.blit(msg,(570,68))
-            """
-            # Draw the pieces on the game board
-            game_board = board.board
-            for i in range(64):
-                x = i / 8
-                y = i % 8
-                if game_board[x][y] == 0:
-                    continue
-                elif game_board[x][y] == 1:
-                    game_menu.blit(pawn1,(100+(i%8)*50,450-(i//8)*50))
-                elif game_board[x][y] == -1:
-                    game_menu.blit(pawn2,(100+(i%8)*50,450-(i//8)*50))
-                elif game_board[x][y] == 6:
-                    game_menu.blit(king1,(100+(i%8)*50,450-(i//8)*50))
-                elif game_board[x][y] == -6:
-                    game_menu.blit(king2,(100+(i%8)*50,450-(i//8)*50))
-                elif game_board[x][y] == 5:
-                    game_menu.blit(queen1,(100+(i%8)*50,450-(i//8)*50))
-                elif game_board[x][y] == -5:
-                    game_menu.blit(queen2,(100+(i%8)*50,450-(i//8)*50))
-                elif game_board[x][y] == 4:
-                    game_menu.blit(rook1,(100+(i%8)*50,450-(i//8)*50))
-                elif game_board[x][y] == -4:
-                    game_menu.blit(rook2,(100+(i%8)*50,450-(i//8)*50))
-                elif game_board[x][y] == 3:
-                    game_menu.blit(bishop1,(100+(i%8)*50,450-(i//8)*50))
-                elif game_board[x][y] == -3:
-                    game_menu.blit(bishop2,(100+(i%8)*50,450-(i//8)*50))
-                elif game_board[x][y] == 2:
-                    game_menu.blit(knight1,(100+(i%8)*50,450-(i//8)*50))
-                elif game_board[x][y] == -2:
-                    game_menu.blit(knight2,(100+(i%8)*50,450-(i//8)*50))
+            update_menus(mx,my,lc,chars)
 
-        screen.fill((255,255,255))
-        draw.rect(screen,(0,0,0),(50,50,500,500))
-        draw.rect(screen,(255,255,255),(100,100,400,400))
-        draw_menus(screen)
+            if is_menu_open(wpromote_menu):  # Promotion menus
+                for i in wpromote_menu.get_pressed():   # Check selection
+                    print "Menu returned " + str(i)
+                    print str(target % 8)
+                    print moves
+                    close_menu(wpromote_menu)
+                    for move in moves:
+                        print move
+                        print i
+                        print board.coordinates[target / 8][target % 8]
+                        print move.replace('+','').endswith(i)
+                        print board.coordinates[target / 8][target % 8] in move
+                        if move.replace('+','').endswith(i) and board.coordinates[target / 8][target % 8] in move:
+                            board.makeMove(move)
+                    deselect_piece()
+                    game_over = board.gameOver() 
+                    if game_over == "white":
+                            open_menu(win_menu)
+                            win_menu.event_on(5)
+                    elif game_over == "black":
+                        open_menu(win_menu)
+                        win_menu.event_on(6)
+                    elif game_over:
+                        open_menu(win_menu)
+                        win_menu.event_on(7)
+            if  is_menu_open(bpromote_menu):
+                for i in bpromote_menu.get_pressed():   # Check selection
+                    print "Menu returned " + str(i)
+                    print str(target % 8)
+                    close_menu(bpromote_menu)
+                    for move in moves:
+                        print move
+                        print i
+                        print board.coordinates[target / 8][target % 8]
+                        print move.replace('+','').endswith(i)
+                        print board.coordinates[target / 8][target % 8] in move
+                        if move.replace('+','').endswith(i) and board.coordinates[target / 8][target % 8] in move:
+                            board.makeMove(move)
+                    deselect_piece()
+                    game_over = board.gameOver() 
+                    if game_over == "white":
+                            open_menu(win_menu)
+                            win_menu.event_on(5)
+                    elif game_over == "black":
+                        open_menu(win_menu)
+                        win_menu.event_on(6)
+                    elif game_over:
+                        open_menu(win_menu)
+                        win_menu.event_on(7)
 
-        display.flip()
-        time.wait(10)
+
+            elif is_menu_open(game_menu):
+                # Handle the game board and game menu
+                for c in game_menu.get_pressed():
+                    if c == 'new':      # Reset game button
+                        reset_game()
+                    elif c == 'quit':   # Exit game button
+                        running = 0
+                    elif c == 'undo':
+                        board.undoMove()
+                        game_board = board.board
+                        continue
+                    else:
+                        if selected == None:    # Select piece that was clicked on
+                            print "Valitaan " + str(c)
+                            select_piece(c)
+                        else:
+                            if selected == c:   # Deselect currently selected piece
+                                print "Poistetaan valinta " + str(c)
+                                deselect_piece()
+                            else:
+                                if not move_piece(c):
+                                    deselect_piece()
+                                    select_piece(c)
+                                if not is_menu_open(wpromote_menu) and not is_menu_open(bpromote_menu):
+                                    deselect_piece()
+                                    game_over = board.gameOver() 
+                                    if game_over == "white":
+                                            open_menu(win_menu)
+                                            win_menu.event_on(5)
+                                    elif game_over == "black":
+                                        open_menu(win_menu)
+                                        win_menu.event_on(6)
+                                    elif game_over:
+                                        open_menu(win_menu)
+                                        win_menu.event_on(7)
+                                else:
+                                    break
+
+
+            if is_menu_open(win_menu):
+                for i in win_menu.get_pressed():
+                    if i == 'quit':
+                        running = 0
+                    elif i == 'new':
+                        reset_game()
+                    elif i == 'undo':
+                        board.undoMove()
+
+            """ STEP 3: Draw menus """
+
+            update_menu_images()
+
+            if is_menu_open(game_menu):
+                """
+                # Show which pieces are captured
+                i = 0
+                p = 0
+                for piece in wcaptured:
+                    if piece == "P":
+                        if p == 0:
+                            game_menu.blit(pawn2,(0,50))
+                        p += 1
+                    else:
+                        i += 50
+                    if piece == "B": game_menu.blit(bishop2,(0,50+i))
+                    if piece == "N": game_menu.blit(knight2,(0,50+i))
+                    if piece == "R": game_menu.blit(rook2,(0,50+i))
+                    if piece == "Q": game_menu.blit(queen2,(0,50+i))
+                if p != 0:
+                    msg = font1.render(str(p),1,(255,255,255))
+                    game_menu.blit(msg,(20,68))
+
+                i = 0
+                p = 0
+                for piece in bcaptured:
+                    if piece == "P":
+                        if p == 0:
+                            game_menu.blit(pawn1,(550,50))
+                        p += 1
+                    else:
+                        i += 50
+                    if piece == "B": game_menu.blit(bishop1,(550,50+i))
+                    if piece == "N": game_menu.blit(knight1,(550,50+i))
+                    if piece == "R": game_menu.blit(rook1,(550,50+i))
+                    if piece == "Q": game_menu.blit(queen1,(550,50+i))
+                if p != 0:
+                    msg = font1.render(str(p),1,(0,0,0))
+                    game_menu.blit(msg,(570,68))
+                """
+                # Draw the pieces on the game board
+                game_board = board.board
+                for i in range(64):
+                    x = i / 8
+                    y = i % 8
+                    if game_board[x][y] == 0:
+                        continue
+                    elif game_board[x][y] == 1:
+                        game_menu.blit(pawn1,(100+(i%8)*50,450-(i//8)*50))
+                    elif game_board[x][y] == -1:
+                        game_menu.blit(pawn2,(100+(i%8)*50,450-(i//8)*50))
+                    elif game_board[x][y] == 6:
+                        game_menu.blit(king1,(100+(i%8)*50,450-(i//8)*50))
+                    elif game_board[x][y] == -6:
+                        game_menu.blit(king2,(100+(i%8)*50,450-(i//8)*50))
+                    elif game_board[x][y] == 5:
+                        game_menu.blit(queen1,(100+(i%8)*50,450-(i//8)*50))
+                    elif game_board[x][y] == -5:
+                        game_menu.blit(queen2,(100+(i%8)*50,450-(i//8)*50))
+                    elif game_board[x][y] == 4:
+                        game_menu.blit(rook1,(100+(i%8)*50,450-(i//8)*50))
+                    elif game_board[x][y] == -4:
+                        game_menu.blit(rook2,(100+(i%8)*50,450-(i//8)*50))
+                    elif game_board[x][y] == 3:
+                        game_menu.blit(bishop1,(100+(i%8)*50,450-(i//8)*50))
+                    elif game_board[x][y] == -3:
+                        game_menu.blit(bishop2,(100+(i%8)*50,450-(i//8)*50))
+                    elif game_board[x][y] == 2:
+                        game_menu.blit(knight1,(100+(i%8)*50,450-(i//8)*50))
+                    elif game_board[x][y] == -2:
+                        game_menu.blit(knight2,(100+(i%8)*50,450-(i//8)*50))
+
+            screen.fill((255,255,255))
+            draw.rect(screen,(0,0,0),(50,50,500,500))
+            draw.rect(screen,(255,255,255),(100,100,400,400))
+            draw_menus(screen)
+
+            display.flip()
+            time.wait(10)    
 
 quit()
