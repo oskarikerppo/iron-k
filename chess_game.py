@@ -653,119 +653,119 @@ else:
                     if ai_side == 'white':
                         white_moves = board.legalMoves()
                         board_to_nn = []
-                        board_to_bob = []
+                        #board_to_bob = []
                         for move in white_moves:
-                            bob_current_moves = []
+                            #bob_current_moves = []
                             board.makeMove(move)
                             if len(board_to_nn) == 0:
                                 board_to_nn = (np.reshape(board.board,(-1,64,1))+6.0)/12.0
                             else:
                                 board_to_nn = np.vstack((board_to_nn, (np.reshape(board.board,(-1,64,1))+6.0)/12.0))
-                            bob_moves = board.legalMoves()
-                            if len(bob_moves) == 0:
-                                winner = board.gameOver()
-                                if winner == 'white':
-                                    bob_current_moves.append(0.0)
-                                elif winner == 'black':
-                                    bob_current_moves.append(1.0)
-                                else:
-                                    bob_current_moves.append(0.5)
-                            for move in bob_moves:
-                                board.makeMove(move)
-                                if len(bob_current_moves) == 0:
-                                    bob_current_moves = (np.reshape(board.board,(-1,64,1))+6.0)/12.0
-                                else:
-                                    bob_current_moves = np.vstack((bob_current_moves, (np.reshape(board.board,(-1,64,1))+6.0)/12.0))
-                                board.undoMove()
-                            board_to_bob.append(bob_current_moves)
+                            #bob_moves = board.legalMoves()
+                            #if len(bob_moves) == 0:
+                            #    winner = board.gameOver()
+                            #    if winner == 'white':
+                            #        bob_current_moves.append(0.0)
+                            #    elif winner == 'black':
+                            #        bob_current_moves.append(1.0)
+                            #    else:
+                            #        bob_current_moves.append(0.5)
+                            #for move in bob_moves:
+                            #    board.makeMove(move)
+                            #    if len(bob_current_moves) == 0:
+                            #        bob_current_moves = (np.reshape(board.board,(-1,64,1))+6.0)/12.0
+                            #    else:
+                            #        bob_current_moves = np.vstack((bob_current_moves, (np.reshape(board.board,(-1,64,1))+6.0)/12.0))
+                            #    board.undoMove()
+                            #board_to_bob.append(bob_current_moves)
                             board.undoMove()
                         predict_1_start = timet()
                         nn_prediction = walt.predict(board_to_nn)
                         predict_1_end = timet()
-                        nn_prediction_2 = []
-                        predict_2_start = timet()
-                        for i in range(len(board_to_bob)):
-                            if type(board_to_bob[i]) == float:
-                                nn_prediction_2.append(board_to_bob[i])
-                            else:
-                                bob_predictions = bob.predict(board_to_bob[i])
-                                nn_prediction_2.append(np.max(bob_predictions))
-                        predict_2_end = timet()
+                        #nn_prediction_2 = []
+                        #predict_2_start = timet()
+                        #for i in range(len(board_to_bob)):
+                        #    if type(board_to_bob[i]) == float:
+                        #        nn_prediction_2.append(board_to_bob[i])
+                        #    else:
+                        #        bob_predictions = bob.predict(board_to_bob[i])
+                        #        nn_prediction_2.append(np.max(bob_predictions))
+                        #predict_2_end = timet()
                         best_move = 0
                         best_evaluation = -500
                         for i in range(len(nn_prediction)):
-                            if nn_prediction[i] >=best_evaluation: #- nn_prediction_2[i] >= best_evaluation:
+                            if nn_prediction[i] >= best_evaluation:#- nn_prediction_2[i] >= best_evaluation:
                                 best_move = i
                                 best_evaluation = nn_prediction[i] #- nn_prediction_2[i]
                         print "Walt predictions: " + str(nn_prediction)
-                        print "Bob predictions: " + str(nn_prediction_2)
+                        #print "Bob predictions: " + str(nn_prediction_2)
                         print "Best move: " + str(best_move)
                         print "Best evaluation: " + str(best_evaluation)
                         board.makeMove(white_moves[best_move])
                         ai_end = timet()
                         print "Total time passed: " + str(ai_end - ai_start)
                         print "Walt predictions took: " + str(predict_1_end - predict_1_start)
-                        print "Bob predictions took " + str(predict_2_end - predict_2_start)
+                        #print "Bob predictions took " + str(predict_2_end - predict_2_start)
                         print "Walt percentage: " + str((predict_1_end - predict_1_start)/(ai_end - ai_start))
-                        print "Bob percentage: " + str((predict_2_end - predict_2_start)/(ai_end - ai_start))
+                        #print "Bob percentage: " + str((predict_2_end - predict_2_start)/(ai_end - ai_start))
                     else:
                         black_moves = board.legalMoves()
                         board_to_nn = []
-                        board_to_walt = []
+                        #board_to_walt = []
                         for move in black_moves:
-                            walt_current_moves = []
+                            #walt_current_moves = []
                             board.makeMove(move)
                             if len(board_to_nn) == 0:
                                 board_to_nn = (np.reshape(board.board,(-1,64,1))+6.0)/12.0
                             else:
                                 board_to_nn = np.vstack((board_to_nn, (np.reshape(board.board,(-1,64,1))+6.0)/12.0))
-                            walt_moves = board.legalMoves()
-                            if len(walt_moves) == 0:
-                                winner = board.gameOver()
-                                if winner == 'white':
-                                    walt_current_moves.append(1.0)
-                                elif winner == 'black':
-                                    walt_current_moves.append(0.0)
-                                else:
-                                    walt_current_moves.append(0.5)
-                            for move in walt_moves:
-                                board.makeMove(move)
-                                if len(walt_current_moves) == 0:
-                                    walt_current_moves = (np.reshape(board.board,(-1,64,1))+6.0)/12.0
-                                else:
-                                    walt_current_moves = np.vstack((walt_current_moves, (np.reshape(board.board,(-1,64,1))+6.0)/12.0))
-                                board.undoMove()
-                            board_to_walt.append(walt_current_moves)
+                            #walt_moves = board.legalMoves()
+                            #if len(walt_moves) == 0:
+                            #    winner = board.gameOver()
+                            #    if winner == 'white':
+                            #        walt_current_moves.append(1.0)
+                            #    elif winner == 'black':
+                            #        walt_current_moves.append(0.0)
+                            #    else:
+                            #        walt_current_moves.append(0.5)
+                            #for move in walt_moves:
+                            #    board.makeMove(move)
+                            #    if len(walt_current_moves) == 0:
+                            #        walt_current_moves = (np.reshape(board.board,(-1,64,1))+6.0)/12.0
+                            #    else:
+                            #        walt_current_moves = np.vstack((walt_current_moves, (np.reshape(board.board,(-1,64,1))+6.0)/12.0))
+                            #    board.undoMove()
+                            #board_to_walt.append(walt_current_moves)
                             board.undoMove()
                         predict_1_start = timet()
                         nn_prediction = bob.predict(board_to_nn)
                         predict_1_end = timet()
-                        nn_prediction_2 = []
-                        predict_2_start = timet()
-                        for i in range(len(board_to_walt)):
-                            if type(board_to_walt[i]) == float:
-                                nn_prediction_2.append(board_to_walt[i])
-                            else:
-                                walt_predictions = walt.predict(board_to_walt[i])
-                                nn_prediction_2.append(max(walt_predictions))
-                        predict_2_end = timet()
+                        #nn_prediction_2 = []
+                        #predict_2_start = timet()
+                        #for i in range(len(board_to_walt)):
+                        #    if type(board_to_walt[i]) == float:
+                        #        nn_prediction_2.append(board_to_walt[i])
+                        #    else:
+                        #        walt_predictions = walt.predict(board_to_walt[i])
+                        #        nn_prediction_2.append(max(walt_predictions))
+                        #predict_2_end = timet()
                         best_move = 0
                         best_evaluation = -500
                         for i in range(len(nn_prediction)):
-                            if nn_prediction[i] >= best_evaluation: #- nn_prediction_2[i] >= best_evaluation:
+                            if nn_prediction[i] >= best_evaluation:#- nn_prediction_2[i] >= best_evaluation:
                                 best_move = i
                                 best_evaluation = nn_prediction[i] #- nn_prediction_2[i]
                         print "Bob predictions: " + str(nn_prediction)
-                        print "Walt predictions: " + str(nn_prediction_2)
+                        #print "Walt predictions: " + str(nn_prediction_2)
                         print "Best move: " + str(best_move)
                         print "Best evaluation: " + str(best_evaluation)
                         board.makeMove(black_moves[best_move])
                         ai_end = timet()
                         print "Total time passed: " + str(ai_end - ai_start)
-                        print "Walt predictions took: " + str(predict_1_end - predict_1_start)
-                        print "Bob predictions took " + str(predict_2_end - predict_2_start)
-                        print "Walt percentage: " + str((predict_1_end - predict_1_start)/(ai_end - ai_start))
-                        print "Bob percentage: " + str((predict_2_end - predict_2_start)/(ai_end - ai_start))
+                        print "Bob predictions took: " + str(predict_1_end - predict_1_start)
+                        #print "Walt predictions took " + str(predict_2_end - predict_2_start)
+                        print "Bob percentage: " + str((predict_1_end - predict_1_start)/(ai_end - ai_start))
+                        #print "Walt percentage: " + str((predict_2_end - predict_2_start)/(ai_end - ai_start))
 
             lc,rc = mouse.get_pressed()[0:2]
             mx,my = mouse.get_pos()
