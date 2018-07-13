@@ -694,9 +694,9 @@ else:
                         best_move = 0
                         best_evaluation = -500
                         for i in range(len(nn_prediction)):
-                            if nn_prediction[i] - nn_prediction_2[i] >= best_evaluation:
+                            if nn_prediction[i] >=best_evaluation: #- nn_prediction_2[i] >= best_evaluation:
                                 best_move = i
-                                best_evaluation = nn_prediction[i] - nn_prediction_2[i]
+                                best_evaluation = nn_prediction[i] #- nn_prediction_2[i]
                         print "Walt predictions: " + str(nn_prediction)
                         print "Bob predictions: " + str(nn_prediction_2)
                         print "Best move: " + str(best_move)
@@ -752,9 +752,9 @@ else:
                         best_move = 0
                         best_evaluation = -500
                         for i in range(len(nn_prediction)):
-                            if nn_prediction[i] - nn_prediction_2[i] >= best_evaluation:
+                            if nn_prediction[i] >= best_evaluation: #- nn_prediction_2[i] >= best_evaluation:
                                 best_move = i
-                                best_evaluation = nn_prediction[i] - nn_prediction_2[i]
+                                best_evaluation = nn_prediction[i] #- nn_prediction_2[i]
                         print "Bob predictions: " + str(nn_prediction)
                         print "Walt predictions: " + str(nn_prediction_2)
                         print "Best move: " + str(best_move)
